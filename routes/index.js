@@ -1,8 +1,10 @@
 var express = require("express");
 var router = express.Router();
 var User = require("../models/user");
+var TempUser = require("../models/tempUser");
 var passport = require("passport");
 var middleware = require("../middleware");
+var crypto = require("crypto");
 
 //========================================================
 // MISC ROUTES
@@ -21,8 +23,13 @@ router.get("/", function(req, res){
     {
         res.render("landing");
     }
-    
+
 });
+
+
+//========================================================
+// AUTH ROUTES
+//========================================================
 
 //home route
 router.get("/home", middleware.isLoggedIn, function(req, res){
@@ -36,6 +43,30 @@ router.get("/verify/:accountID/:token", function(req, res){
     
     res.render("home");
     
+});
+
+//handle register logic
+router.post("/register", function(req, res){
+    
+    //generate verification token
+    var verifyToken = crypto.randomBytes(64).toString('hex');;
+
+    var newTempUser = new TempUser({
+        username: req.body.username,
+        verifyToken: verifyToken
+    });
+    
+    TempUser.create(newTempUser, function(err,tempUser){
+        if(err)
+        {
+            //error handling
+        }
+        else
+        {
+            //notification to check email
+        }
+    });
+
 });
 
 module.exports = router;
