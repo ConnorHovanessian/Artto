@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require("../models/user");
 var passport = require("passport");
 var middleware = require("../middleware");
+var mailUtil = require("../util/mailUtil");
 var crypto = require("crypto");
 
 //========================================================
@@ -12,17 +13,7 @@ var crypto = require("crypto");
 //root route
 router.get("/", function(req, res){
     
-    //if user is logged in, take them home
-    if(req.isAuthenticated())
-    {
-        res.redirect("/home");
-    }
-    //if not, take them to the landing page
-    else
-    {
-        res.render("landing");
-    }
-
+    res.render("landing");
 });
 
 
@@ -37,17 +28,25 @@ router.get("/home", middleware.isLoggedIn, function(req, res){
     {
         req.logout();
         req.flash("error", "Please verify your email to login.");
-        return res.redirect("/login");
+        res.render("landing");
     }
-    res.render("home");
-    
+    else
+    {
+        res.render("home");  
+    }
+
+});
+
+//show register form
+router.get("/register", function(req, res){
+    res.render("register");
 });
 
 //handle register logic
 router.post("/register", function(req, res){
     
     //generate verification token
-    var verifyToken = crypto.randomBytes(64).toString('hex');;
+    var verifyToken = crypto.randomBytes(32).toString('hex');
 
     var newUser = new User({
         username: req.body.username,
@@ -65,8 +64,20 @@ router.post("/register", function(req, res){
         }
         else
         {
+            var subject = "Verify your Artto account.";
+            var body = 'Please click on the following link to verify your Artto account: ';
+            var url = req.originalUrl.split("/")[0];
+            var fullUrl = req.protocol + '://' + req.get('host') + url + "/verify/" + user._id + "/" + verifyToken;
+            body += ' <a href="' + fullUrl + '">Verify</a>';
+            var error;
+            mailUtil.sendMail(user.email, subject, body, error);
+            if(error)
+            {
+                //error handling here
+            }
+            
             req.flash("success", "Successfully created account! Please verify your email address to login.");
-            return res.redirect("/register");
+            return res.redirect("/login");
         }
         
     });
@@ -101,16 +112,26 @@ router.get("/verify/:accountID/:token", function(req, res){
             if(user.verifyToken === req.params.token)
             {
                 user.verified = true;
+                user.verifyToken = "";
                 user.save();
-                passport.authenticate("local")(req, res, function(){
-                    req.flash("success", "Account successfully verified!");
-                    res.redirect("/home");
-                });
+                req.flash("success", "Account successfully verified, you can now login!");
+                res.redirect("/");
             }
+            else
+            {
+                res.redirect("/");
+            }
+            
         }
 
     });
+    
+});
 
+router.get("/logout", function(req, res){
+    req.logout();
+    req.flash("success", "Logged out, see you soon!");
+    res.redirect("/");
 });
 
 module.exports = router;

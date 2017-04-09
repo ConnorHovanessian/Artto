@@ -6,12 +6,13 @@ var express = require("express"),
     passport = require("passport"),
     localStrategy = require("passport-local"),
     User = require("./models/user"),
+    Mailgun = require('mailgun-js'),
     methodOverride = require("method-override");
 
 //requiring routes
 var indexRoutes = require("./routes/index");
     
-var dbURL = process.env.DATABASEURL || "mongodb://localhost/yelp_camp"
+var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
 mongoose.connect(dbURL);
 
 app.use(bodyParser.urlencoded({extended : true}));
