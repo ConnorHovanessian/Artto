@@ -6,7 +6,6 @@ var express = require("express"),
     passport = require("passport"),
     localStrategy = require("passport-local"),
     User = require("./models/user"),
-    TempUser = require("./models/tempUser"),
     methodOverride = require("method-override");
 
 //requiring routes
