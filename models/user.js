@@ -7,6 +7,7 @@ var UserSchema = new mongoose.Schema({
     password: String,
     verifyToken: String,
     verified: Boolean,
+    hadPayed: Boolean,
     created: Date
 });
 

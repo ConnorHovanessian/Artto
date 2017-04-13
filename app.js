@@ -11,6 +11,7 @@ var express = require("express"),
 
 //requiring routes
 var indexRoutes = require("./routes/index");
+var paymentRoutes = require("./routes/payments");
     
 var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
 mongoose.connect(dbURL);
@@ -44,6 +45,7 @@ app.use(function(req, res, next){
 });
 
 app.use(indexRoutes);
+app.use(paymentRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("server started");

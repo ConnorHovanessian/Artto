@@ -11,7 +11,7 @@ var api_key = 'key-96a0295f5f9c7990d36cc237f364696d';
 var domain = 'sandbox4730a071afb34d268035b65dcc4180eb.mailgun.org';
 
 //Your sending email address
-var from_who = 'noreply@artto.com';
+var from_who = 'support@artto.com';
 
 mailUtil.sendMail = function(to, subject, body, error)
 {

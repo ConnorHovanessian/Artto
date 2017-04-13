@@ -64,16 +64,22 @@ router.post("/register", function(req, res){
         }
         else
         {
-            var subject = "Verify your Artto account.";
-            var body = 'Please click on the following link to verify your Artto account: ';
             var url = req.originalUrl.split("/")[0];
             var fullUrl = req.protocol + '://' + req.get('host') + url + "/verify/" + user._id + "/" + verifyToken;
-            body += ' <a href="' + fullUrl + '">Verify</a>';
+            
+            var subject = "Verify your Artto account.";
+            
+            var body = '<p>Hi ' + user.username + ',</p>';
+            body += '<p>Thanks for signing up with Artto! Please click on the following link to verify your Artto account:</p> ';
+            body += ' <p><a href="' + fullUrl + '">Verify</a></p>';
+            body += '<p>Cheers,</p>';
+            body += '<p>Artto Team</p>';
+            
             var error;
             mailUtil.sendMail(user.email, subject, body, error);
             if(error)
             {
-                //error handling here
+                console.log(error);
             }
             
             req.flash("success", "Successfully created account! Please verify your email address to login.");
