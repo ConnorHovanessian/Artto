@@ -20,7 +20,6 @@ mongoose.connect(dbURL);
 app.use(bodyParser.urlencoded({extended : true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
-app.use("/literallycanvas", express.static(__dirname + "/node_modules/literallycanvas/lib"));
 app.use(methodOverride("_method"));
 app.use(flash());
 
