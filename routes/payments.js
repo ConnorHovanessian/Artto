@@ -3,8 +3,6 @@ var router = express.Router();
 var User = require("../models/user");
 var passport = require("passport");
 var middleware = require("../middleware");
-var mailUtil = require("../util/mailUtil");
-var crypto = require("crypto");
 
 
 const keyPublishable = process.env.PUBLISHABLE_KEY || "pk_test_qNf1FF8I6DkUaR8nofX4F552";
@@ -33,9 +31,18 @@ router.post("/charge/:userID", middleware.isLoggedIn, function(req, res){
          customer: customer.id
     }))
     .then(function(charge){
-        req.user.hasPayed = true;
-        req.user.save();
-        res.send(":)");
+        if(charge.paid)
+        {
+            req.user.hasPayed = true;
+            req.user.save();
+            req.flash("success", "Payment successfull! Make some art.");
+            res.redirect("/art");
+        }
+        else
+        {
+            req.flash("error", charge.outcome.seller_message);
+            res.redirect("/charge");
+        }
     });
 
 });

@@ -115,7 +115,8 @@ router.get("/verify/:accountID/:token", function(req, res){
         }
         else
         {
-            if(user.verifyToken === req.params.token)
+            if(user.verifyToken != "" 
+                && user.verifyToken === req.params.token)
             {
                 user.verified = true;
                 user.verifyToken = "";

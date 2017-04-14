@@ -12,6 +12,7 @@ var express = require("express"),
 //requiring routes
 var indexRoutes = require("./routes/index");
 var paymentRoutes = require("./routes/payments");
+var artRoutes = require("./routes/art");
     
 var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
 mongoose.connect(dbURL);
@@ -19,6 +20,7 @@ mongoose.connect(dbURL);
 app.use(bodyParser.urlencoded({extended : true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+app.use("/literallycanvas", express.static(__dirname + "/node_modules/literallycanvas/lib"));
 app.use(methodOverride("_method"));
 app.use(flash());
 
@@ -46,6 +48,7 @@ app.use(function(req, res, next){
 
 app.use(indexRoutes);
 app.use(paymentRoutes);
+app.use(artRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(){
     console.log("server started");
