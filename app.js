@@ -6,8 +6,9 @@ var express = require("express"),
     passport = require("passport"),
     localStrategy = require("passport-local"),
     User = require("./models/user"),
-    Mailgun = require('mailgun-js'),
-    methodOverride = require("method-override");
+    methodOverride = require("method-override"),
+    aestheticUtil = require("./util/aestheticUtil"),
+    cron = require('node-cron');
 
 //requiring routes
 var indexRoutes = require("./routes/index");
@@ -50,5 +51,12 @@ app.use(paymentRoutes);
 app.use(artRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(){
-    console.log("server started");
+    
+    console.log("artto started");
+    
+    //schedule weekly round
+    cron.schedule('*/2 * * * *', function(){
+        aestheticUtil.pickMostAesthetic();
+    });
+    
 });
