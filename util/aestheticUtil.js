@@ -3,9 +3,10 @@ var getPixels = require("get-pixels");
 var fs = require('fs');
 var mailUtil = require("../util/mailUtil");
 var User = require("../models/user");
+var crypto = require("crypto");
 
 //pick most aesthetic art submission
-aestheticUtil.pickMostAesthetic = function(){
+aestheticUtil.pickMostAesthetic = function(appURL){
     
     var width = 1024;
     var height = 576;
@@ -35,6 +36,7 @@ aestheticUtil.pickMostAesthetic = function(){
     var submissionDir = __dirname + '/../public/submissions/';
     var artScorePairs = [];
     fs.readdir(submissionDir, (err, files) => {
+
         if(err)
         {
             console.log(err);
@@ -60,7 +62,7 @@ aestheticUtil.pickMostAesthetic = function(){
                             for(var j = 0; j < height; j++)
                             {
                                 
-                                score = Math.abs(refPiece[i][j].r - pixels.data[pixelIndex]);
+                                score += Math.abs(refPiece[i][j].r - pixels.data[pixelIndex]);
                                 score += Math.abs(refPiece[i][j].g - pixels.data[pixelIndex + 1]);
                                 score += Math.abs(refPiece[i][j].b - pixels.data[pixelIndex + 2]);
                                 score += Math.abs(refPiece[i][j].a - pixels.data[pixelIndex + 3]);
@@ -70,38 +72,51 @@ aestheticUtil.pickMostAesthetic = function(){
                         
                         var pair = {name:file, score:score};
                         artScorePairs.push(pair);
+                        
+                        // if we're on the last scoring, find the lowest score
+                        if(artScorePairs.length === files.length)
+                        {
+                            console.log(artScorePairs.length);
+                            console.log(files.length);
+                            //sort scores (lowest to highest)
+                            artScorePairs.sort(function(a,b){
+                                return a.score - b.score;
+                            });
+                            
+                            //email most aesthetic artist
+                            User.findById(artScorePairs[0].name.slice(0,-4), function(err, user){
+                                if(err)
+                                {
+                                    console.log(err);
+                                }
+                                else
+                                {
+                                    var sellToken = crypto.randomBytes(32).toString('hex');
+                                    user.sellToken = sellToken;
+                                    user.save();
+                                    var fullUrl = appURL + "/sell/" + user._id + "/" + sellToken;
+                                    var subject = "Your Artto submission has been chosed as most aesthetic!";
+                    
+                    
+                                    var body = '<p>Hi ' + user.username + ',</p>';
+                                    body += '<p>Congratulations, your submission has been chosen as most aesthetic! Click the link below to sell to Hall of Fame!</p> ';
+                                    body += ' <p><a href="' + fullUrl + '">Sell</a></p>';
+                                    body += '<p>Cheers,</p>';
+                                    body += '<p>Artto Team</p>';
+                                    
+                                    var error;
+                                    mailUtil.sendMail(user.email, subject, body, error);
+                                    if(error)
+                                    {
+                                        console.log(error);
+                                    }
+                                }
+                            });
+                        }
             
                     }
                     
-                    //sort scores (lowest to highest)
-                    artScorePairs.sort(function(a,b){
-                        return a.score - b.score;
-                    });
-                    
-                    //email most aesthetic artist
-                    User.findById(artScorePairs[0].name.slice(0,-4), function(err, user){
-                        if(err)
-                        {
-                            console.log(err);
-                        }
-                        else
-                        {
-                            var subject = "Your Artto submission has been chosed as most aesthetic!";
-            
-                            var body = '<p>Hi ' + user.username + ',</p>';
-                            body += '<p>Congratulations, your submission has been chosen as most aesthetic!</p> ';
-                            //body += ' <p><a href="' + fullUrl + '">Verify</a></p>';
-                            body += '<p>Cheers,</p>';
-                            body += '<p>Artto Team</p>';
-                            
-                            var error;
-                            mailUtil.sendMail(user.email, subject, body, error);
-                            if(error)
-                            {
-                                console.log(error);
-                            }
-                        }
-                    });
+                
                 });
             });
             

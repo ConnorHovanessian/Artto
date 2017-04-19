@@ -12,10 +12,12 @@ var express = require("express"),
 
 //requiring routes
 var indexRoutes = require("./routes/index");
+var hofRoutes = require("./routes/hof");
 var paymentRoutes = require("./routes/payments");
 var artRoutes = require("./routes/art");
     
 var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
+var appURL = process.env.APPURL || "https://lottery-bomjak.c9users.io"
 mongoose.connect(dbURL);
 
 app.use(bodyParser.urlencoded({extended : true}));
@@ -49,14 +51,15 @@ app.use(function(req, res, next){
 app.use(indexRoutes);
 app.use(paymentRoutes);
 app.use(artRoutes);
+app.use(hofRoutes);
 
-app.listen(process.env.PORT, process.env.IP, function(){
+app.listen(process.env.PORT, process.env.IP, function(req){
     
     console.log("artto started");
     
-    //schedule weekly round
-    cron.schedule('*/2 * * * *', function(){
-        aestheticUtil.pickMostAesthetic();
+    //schedule weekly round (now every 1 mins)
+    cron.schedule('*/10 * * * *', function(){
+        aestheticUtil.pickMostAesthetic(appURL);
     });
     
 });

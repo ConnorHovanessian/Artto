@@ -6,6 +6,7 @@ var UserSchema = new mongoose.Schema({
     email: String,
     password: String,
     verifyToken: String,
+    sellToken: String,
     verified: Boolean,
     hasPayed: Boolean,
     hasSubmitted: Boolean,
