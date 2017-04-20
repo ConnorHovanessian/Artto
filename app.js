@@ -58,7 +58,7 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     console.log("artto started");
     
     //schedule weekly round (now every 1 mins)
-    cron.schedule('*/10 * * * *', function(){
+    cron.schedule('*/5 * * * *', function(){
         aestheticUtil.pickMostAesthetic(appURL);
     });
     
