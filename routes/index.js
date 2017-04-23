@@ -56,13 +56,30 @@ router.post("/register", function(req, res){
     });
     
     User.register(newUser, req.body.password, function(err, user){
-        
+             
         if(err)
         {
             req.flash("error", err.message);
             return res.redirect("/register");
         }
-        else
+        /*else if(user.username.length<4||user.username.length>12||!user.username.match(/^[0-9a-z]+$/))
+        {
+            req.flash("error", "Username must be between 4 and 12 alphanumeric characters.");
+            return res.redirect("/register");
+        }   
+        else if(user.password.length<8||user.password.length>20)
+        {
+            req.flash("error", "Password must be between 8 and 20 characters.");
+            return res.redirect("/register");
+        }
+        else if(user.password.value!=user.password_confirmation.value)
+        {
+            req.flash("error", "Password and Password Confirmation must be the same.");
+            return res.redirect("/register");
+        }*/
+        
+        
+        else //success
         {
             var url = req.originalUrl.split("/")[0];
             var fullUrl = req.protocol + '://' + req.get('host') + url + "/verify/" + user._id + "/" + verifyToken;
