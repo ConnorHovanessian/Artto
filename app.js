@@ -14,6 +14,7 @@ var express = require("express"),
 var indexRoutes = require("./routes/index");
 var hofRoutes = require("./routes/hof");
 var paymentRoutes = require("./routes/payments");
+var profileRoutes = require("./routes/profile");
 var artRoutes = require("./routes/art");
     
 var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
@@ -52,6 +53,7 @@ app.use(indexRoutes);
 app.use(paymentRoutes);
 app.use(artRoutes);
 app.use(hofRoutes);
+app.use(profileRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(req){
     
