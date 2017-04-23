@@ -57,6 +57,12 @@ router.post("/register", function(req, res){
     
     User.register(newUser, req.body.password, function(err, user){
              
+        if(req.body.phone)
+        {
+            console.log("Honey Detected");
+            return res.redirect("/");
+        }
+        
         if(err)
         {
             req.flash("error", err.message);
