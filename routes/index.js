@@ -4,6 +4,7 @@ var User = require("../models/user");
 var passport = require("passport");
 var middleware = require("../middleware");
 var mailUtil = require("../util/mailUtil");
+var constants = require("../util/constants");
 var crypto = require("crypto");
 
 //========================================================
@@ -45,6 +46,23 @@ router.get("/register", function(req, res){
 //handle register logic
 router.post("/register", function(req, res){
     
+    //Check for Honeypot 
+    if(req.body.phone)
+    {
+        console.log("Honey Detected");
+        return res.redirect("/");
+    }
+    
+    //Check to make sure user data is valid
+    if(!constants.usernameRegex.test(req.body.username) 
+        || !constants.passwordRegex.test(req.body.password)
+        || !constants.emailRegex.test(req.body.email)
+        || (req.body.password !== req.body.password_confirmation))
+    {
+        req.flash("error", "Invalid user data detected!");
+        return res.redirect("/register");
+    }
+    
     //generate verification token
     var verifyToken = crypto.randomBytes(32).toString('hex');
 
@@ -56,34 +74,12 @@ router.post("/register", function(req, res){
     });
     
     User.register(newUser, req.body.password, function(err, user){
-             
-        if(req.body.phone)
-        {
-            console.log("Honey Detected");
-            return res.redirect("/");
-        }
         
         if(err)
         {
             req.flash("error", err.message);
             return res.redirect("/register");
         }
-        /*else if(user.username.length<4||user.username.length>12||!user.username.match(/^[0-9a-z]+$/))
-        {
-            req.flash("error", "Username must be between 4 and 12 alphanumeric characters.");
-            return res.redirect("/register");
-        }   
-        else if(user.password.length<8||user.password.length>20)
-        {
-            req.flash("error", "Password must be between 8 and 20 characters.");
-            return res.redirect("/register");
-        }
-        else if(user.password.value!=user.password_confirmation.value)
-        {
-            req.flash("error", "Password and Password Confirmation must be the same.");
-            return res.redirect("/register");
-        }*/
-        
         
         else //success
         {
