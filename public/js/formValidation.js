@@ -11,7 +11,10 @@ document.addEventListener("DOMContentLoaded", function() {
     if(supports_input_validity()) {
         
         var usernameInput = document.getElementById("username");
-        usernameInput.setCustomValidity(usernameInput.title);
+        if(usernameInput)
+        {
+          usernameInput.setCustomValidity(usernameInput.title);
+        }
         
         var pwd1Input = document.getElementById("password");
         pwd1Input.setCustomValidity(pwd1Input.title);
@@ -19,9 +22,12 @@ document.addEventListener("DOMContentLoaded", function() {
         var pwd2Input = document.getElementById("password_confirmation");
         
         // input key handlers
-        usernameInput.addEventListener("keyup", function() {
-        usernameInput.setCustomValidity(this.validity.patternMismatch ? usernameInput.title : "");
-        }, false);
+        if(usernameInput)
+        {
+          usernameInput.addEventListener("keyup", function() {
+          usernameInput.setCustomValidity(this.validity.patternMismatch ? usernameInput.title : "");
+          }, false);
+        }
         
         pwd1Input.addEventListener("keyup", function() {
         this.setCustomValidity(this.validity.patternMismatch ? pwd1Input.title : "");
