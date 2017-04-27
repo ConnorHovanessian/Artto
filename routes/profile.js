@@ -4,6 +4,7 @@ var User = require("../models/user");
 var middleware = require("../middleware");
 var constants = require("../util/constants");
 
+
 //Route to render user profile information
 router.get("/profile", middleware.isLoggedIn, function(req, res){
     
@@ -47,5 +48,6 @@ router.post("/changePassword", middleware.isLoggedIn, function(req, res){
     });
     
 });
+
 
 module.exports = router;
