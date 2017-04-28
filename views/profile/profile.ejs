@@ -1,12 +1,16 @@
 <% include ../partials/header %>
 
 <div class="container"> 
-
-    <h1>Your Profile</h1>
-    
-    <p>Username:  <%= currentUser.username %></p>
-    <p>Email:  <%= currentUser.email %></p>
-    
+    <div class="row">
+        <div style="width: 50%; margin: 25px auto;">
+            <h1>Your Profile</h1>
+            
+            <p>Username:  <%= currentUser.username %></p>
+            <p>Email:  <%= currentUser.email %></p>
+            
+            <a class="btn btn-sm btn-warning" href="/changePassword" role="button">Change Password</a>
+        </div>
+    </div>
 </div>
 
 <% include ../partials/footer %>

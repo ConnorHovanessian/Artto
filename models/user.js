@@ -6,11 +6,18 @@ var UserSchema = new mongoose.Schema({
     email: String,
     password: String,
     verifyToken: String,
+    passwordResetToken: String,
     sellToken: String,
     verified: Boolean,
     hasPayed: Boolean,
     hasSubmitted: Boolean,
-    created: Date
+    dateCreated: Date,
+    submissions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Submission"
+        }
+    ]
 });
 
 UserSchema.plugin(passportLocalMongoose);
