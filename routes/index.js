@@ -74,7 +74,7 @@ router.post("/register", function(req, res){
     });
     
     User.register(newUser, req.body.password, function(err, user){
-        
+
         if(err)
         {
             req.flash("error", err.message);
