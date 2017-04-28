@@ -47,7 +47,7 @@ router.post("/register", function(req, res){
     
     //generate verification token
     var verifyToken = crypto.randomBytes(32).toString('hex');
-
+    
     var newUser = new User({
         username: req.body.username,
         email: req.body.email,
@@ -56,7 +56,7 @@ router.post("/register", function(req, res){
     });
     
     User.register(newUser, req.body.password, function(err, user){
-             
+
         if(req.body.phone)
         {
             console.log("Honey Detected");
@@ -68,22 +68,6 @@ router.post("/register", function(req, res){
             req.flash("error", err.message);
             return res.redirect("/register");
         }
-        /*else if(user.username.length<4||user.username.length>12||!user.username.match(/^[0-9a-z]+$/))
-        {
-            req.flash("error", "Username must be between 4 and 12 alphanumeric characters.");
-            return res.redirect("/register");
-        }   
-        else if(user.password.length<8||user.password.length>20)
-        {
-            req.flash("error", "Password must be between 8 and 20 characters.");
-            return res.redirect("/register");
-        }
-        else if(user.password.value!=user.password_confirmation.value)
-        {
-            req.flash("error", "Password and Password Confirmation must be the same.");
-            return res.redirect("/register");
-        }*/
-        
         
         else //success
         {
