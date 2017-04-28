@@ -11,7 +11,13 @@ var UserSchema = new mongoose.Schema({
     verified: Boolean,
     hasPayed: Boolean,
     hasSubmitted: Boolean,
-    created: Date
+    dateCreated: Date,
+    submissions: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Submission"
+        }
+    ]
 });
 
 UserSchema.plugin(passportLocalMongoose);
