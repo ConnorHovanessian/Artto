@@ -3,8 +3,8 @@
 <div class="container">
     <div class="row">
         <h1 style="text-align: center;">Hall of Fame</h1>
-        <% files.forEach(function(file){ %>
-            <img src="/hof/<%= file %>" alt="submission" class="img-thumbnail">
+        <% submissions.forEach(function(submission){ %>
+            <img src="/hof/<%= submission._id %>.png" alt="submission" class="img-thumbnail">
         <% }); %>
     </div>
 </div>

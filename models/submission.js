@@ -3,7 +3,9 @@ require('mongoose-double')(mongoose);
 
 var SubmissionSchema = new mongoose.Schema({
     dateSubmitted: Date,
-    chosenForHOF: false,
+    rank: Number,
+    chosenForHOF: Boolean,
+    hofContender: Boolean,
     value: mongoose.Schema.Types.Double,
     artist: {
         id: {

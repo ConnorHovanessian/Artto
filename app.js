@@ -8,6 +8,7 @@ var express = require("express"),
     User = require("./models/user"),
     methodOverride = require("method-override"),
     aestheticUtil = require("./util/aestheticUtil"),
+    seedUtil = require("./util/seeds"),
     cron = require('node-cron');
 
 //requiring routes
@@ -18,7 +19,6 @@ var profileRoutes = require("./routes/profile");
 var artRoutes = require("./routes/art");
     
 var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
-var appURL = process.env.APPURL || "https://lottery-bomjak.c9users.io"
 mongoose.connect(dbURL);
 
 app.use(bodyParser.urlencoded({extended : true}));
@@ -59,9 +59,12 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     
     console.log("artto started");
     
+    
+    //seedUtil.createAdminAccount();
+    
     //schedule weekly round (now every 1 mins)
     cron.schedule('*/5 * * * *', function(){
-        aestheticUtil.pickMostAesthetic(appURL);
+        aestheticUtil.pickMostAesthetic();
     });
     
 });

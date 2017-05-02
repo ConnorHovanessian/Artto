@@ -3,30 +3,23 @@ var mailUtil = {};
 
 var Mailgun = require('mailgun-js');
 
-//Mailgun API keys
-//Your api key, from Mailgun’s Control Panel
-var api_key = 'key-96a0295f5f9c7990d36cc237f364696d';
-
-//Your domain, from the Mailgun Control Panel
-var domain = 'sandbox4730a071afb34d268035b65dcc4180eb.mailgun.org';
-
-//Your sending email address
-var from_who = 'support@artto.com';
+var crypto = require("crypto");
+var constants = require("./constants");
 
 mailUtil.sendMail = function(to, subject, body, error)
 {
     //We pass the api_key and domain to the wrapper, or it won't be able to identify + send emails
-    var mailgun = new Mailgun({apiKey: api_key, domain: domain});
+    var mailgun = new Mailgun({apiKey: constants.api_key, domain: constants.domain});
 
     var data = {
     //Specify email data
-      from: from_who,
+      from: constants.from_who,
     //The email to contact
       to: to,
     //Subject and text data  
       subject: subject,
       html: body
-    }
+    };
 
     //Invokes the method to send emails given the above data with the helper library
     mailgun.messages().send(data, function (err, body) {
@@ -35,6 +28,33 @@ mailUtil.sendMail = function(to, subject, body, error)
             error = err;
         }
     });
+};
+
+mailUtil.sendSelectionMail = function(user)
+{
+    var sellToken = crypto.randomBytes(32).toString('hex');
+    user.sellToken = sellToken;
+    user.save();
+    var sellUrl = constants.appURL + "/sell/" + user._id + "/" + sellToken;
+    var keepUrl = constants.appURL + "/keep/" + user._id + "/" + sellToken;
+    var subject = "Your Artto submission has been chosen as most aesthetic!";
+    
+    var body = '<p>Hi ' + user.username + ',</p>';
+    body += '<p>Congratulations, your submission has been chosen as most aesthetic! ';
+    body += 'If you wish to sell your art, click the link below to sell it to the Artto Hall of Fame!</p>';
+    body += ' <p><a href="' + sellUrl + '">Sell</a></p>';
+    body += '<p>Alternatively, if you wish to keep your art, you can click the link below.</p>';
+    body += ' <p><a href="' + keepUrl + '">Keep</a></p>';
+    body += '<p>Cheers,</p>';
+    body += '<p>Artto Team</p>';
+    
+    var error;
+    mailUtil.sendMail(user.email, subject, body, error);
+    if(error)
+    {
+      console.log(error);
+    }
+    
 };
 
 
