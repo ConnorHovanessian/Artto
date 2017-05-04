@@ -1,6 +1,8 @@
 var seeds = {};
 var User = require("../models/user");
 var Submission = require("../models/submission");
+var constants = require("./constants");
+var sysParamUtil = require("./systemParameters");
 
 //================================================
 //Function for admin account seed
@@ -62,6 +64,17 @@ seeds.createAdminAccount = function(){
                 
             });
        }
+    });
+    
+};
+
+//================================================
+// System parameter seeds
+//================================================
+seeds.initializeSystemParameters = function(){
+    
+    constants.systemParameters.forEach(param =>{
+        sysParamUtil.addParameter(param, err => console.log(err));
     });
     
 };

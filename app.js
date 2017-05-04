@@ -9,6 +9,7 @@ var express = require("express"),
     methodOverride = require("method-override"),
     aestheticUtil = require("./util/aestheticUtil"),
     seedUtil = require("./util/seeds"),
+    constants = require("./util/constants"),
     cron = require('node-cron');
 
 //requiring routes
@@ -60,7 +61,9 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     console.log("artto started");
     
     
-    seedUtil.createAdminAccount();
+    //seedUtil.createAdminAccount();
+
+    seedUtil.initializeSystemParameters();
     
     //schedule weekly round (now every 1 mins)
     cron.schedule('*/5 * * * *', function(){
