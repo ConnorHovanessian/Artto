@@ -35,7 +35,7 @@ router.post("/charge/:userID", middleware.isLoggedIn, function(req, res){
         {
             req.user.hasPayed = true;
             req.user.save();
-            req.flash("success", "Payment successfull! Make some art.");
+            req.flash("success", "Payment successful! Make some art.");
             res.redirect("/art");
         }
         else

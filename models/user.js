@@ -12,6 +12,8 @@ var UserSchema = new mongoose.Schema({
     hasPayed: Boolean,
     hasSubmitted: Boolean,
     dateCreated: Date,
+    timeStarted: Date,
+    timeFinished: Date,
     submissions: [
         {
             type: mongoose.Schema.Types.ObjectId,

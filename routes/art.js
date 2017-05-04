@@ -11,6 +11,8 @@ var fs = require('fs');
 router.get("/art", middleware.isLoggedIn, function(req, res){
     if(req.user.hasPayed && !req.user.hasSubmitted)
     {
+        req.user.timeStarted = Date.now();
+        req.user.save();
         res.render("art/art");
     }
     else if(!req.user.hasPayed)
@@ -28,7 +30,15 @@ router.get("/art", middleware.isLoggedIn, function(req, res){
 //Route to create new submission
 router.post("/art/:userID", middleware.isLoggedIn, function(req, res){
     
-    if(!req.user.hasPayed)
+    req.user.timeFinished = Date.now();
+    req.user.save();
+    if(req.user.timeFinished.getTime() > req.user.timeStarted.getTime() + 65000) //Checks for 65 seconds between start and end of drawing period
+    {
+        req.flash("error", "You only have 60 seconds to create a piece of art!");
+        res.redirect("/home");
+    }
+
+    else if(!req.user.hasPayed)
     {
         req.flash("error", "You must pay before creating a submission!");
         res.redirect("/home");
@@ -83,7 +93,7 @@ router.post("/art/:userID", middleware.isLoggedIn, function(req, res){
                             {
                                 req.user.hasSubmitted = true;
                                 req.user.save();
-                                req.flash("success", "Art submission successfull." 
+                                req.flash("success", "Art submission successful." 
                                             + " You will be contacted by email if your art was chosen!");
                                 res.redirect("/home");
                             }
