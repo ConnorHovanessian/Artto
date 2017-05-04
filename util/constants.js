@@ -39,5 +39,14 @@ constants.numSelections = 10;
 constants.submissionWidth = 1024;
 constants.submissionHeight = 576;
 
+//================================================
+//System parameters Config
+//================================================
+
+// all system wide parameter value names go here
+constants.curSelState = "current_selection_state";
+constants.prevSelState = "previous_selection_state";
+constants.systemParameters = [constants.curSelState, constants.prevSelState];
+
 
 module.exports = constants;
