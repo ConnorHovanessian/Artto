@@ -30,9 +30,7 @@ router.get("/art", middleware.isLoggedIn, function(req, res){
 //Route to create new submission
 router.post("/art/:userID", middleware.isLoggedIn, function(req, res){
     
-    req.user.timeFinished = Date.now();
-    req.user.save();
-    if(req.user.timeFinished.getTime() > req.user.timeStarted.getTime() + 65000) //Checks for 65 seconds between start and end of drawing period
+    if(Date.now().getTime() > req.user.timeStarted.getTime() + 65000) //Checks for 65 seconds between start and end of drawing period
     {
         req.flash("error", "You only have 60 seconds to create a piece of art!");
         res.redirect("/home");

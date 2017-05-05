@@ -16,7 +16,7 @@ seeds.createAdminAccount = function(){
         else
         {
             console.log("removed submissions...");
-        }
+        } 
     });
     User.remove({}, function(err){
        if(err)
@@ -73,8 +73,10 @@ seeds.createAdminAccount = function(){
 //================================================
 seeds.initializeSystemParameters = function(){
     
-    constants.systemParameters.forEach(param =>{
-        sysParamUtil.addParameter(param, err => console.log(err));
+    constants.systemParameters.forEach(param => {
+        sysParamUtil.addParameter(param, err => {
+            if(err)console.log(err)
+        });
     });
     
 };
