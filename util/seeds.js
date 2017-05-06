@@ -71,11 +71,49 @@ seeds.createAdminAccount = function(){
 //================================================
 // System parameter seeds
 //================================================
-seeds.initializeSystemParameters = function(){
+seeds.initializeSystemParameters = function(callback){
     
     constants.systemParameters.forEach(param => {
+        
         sysParamUtil.addParameter(param, err => {
-            if(err)console.log(err)
+            
+            // initialize parameters with default values if 
+            // they didn't exist already
+            if(err)
+            {
+                console.log(err);
+            }
+            else if(param === constants.curSelState)
+            {
+                sysParamUtil.setParameterValue(
+                    param, constants.curSelState_OPEN, function(err){
+                        if(err)
+                        {
+                            console.log(err);
+                        } 
+                        else
+                        {
+                            console.log("System parameter " + param 
+                            + " initialized with value " + constants.curSelState_OPEN);
+                        }
+                    });
+            }
+            else if(param === constants.prevSelState)
+            {
+                sysParamUtil.setParameterValue(
+                    param, constants.prevSelState_NONE, function(err){
+                        if(err)
+                        {
+                            console.log(err);
+                        } 
+                        else
+                        {
+                            console.log("System parameter " + param 
+                            + " initialized with value " + constants.prevSelState_NONE);
+                        }
+                    });
+            }
+             
         });
     });
     

@@ -1,5 +1,47 @@
 <% include partials/header %>
 
-<h1>WELCOME HOME!!</h1>
+<div class="container">
+    
+    <h1>WELCOME HOME!!</h1>
+
+    <hr>
+    
+    <h3>State of previous selections:</h3>
+    
+    <% if(prevState === "NONE"){ %>
+    
+        <p>No selection state to display, be the first to have your art in the Hall of Fame!</p>
+        
+    <% } else if (prevState === "SELECTED"){ %>
+    
+        <p>The most aesthetic artists have been selected and Artto is waiting for a reply!</p>
+        
+    <% } else if (prevState === "SOLD"){ %>
+    
+        <p>One of the selected artists has sold their submission to the Artto Hall of Fame!</p>
+    
+    <% } else if (prevState === "KEPT"){ %>
+    
+        <p>All of the selected artists have chosen to keep their submissions!</p>
+        
+    <% } %>
+    
+    <hr>
+    
+    <h3>Current submission state:</h3>
+    
+    <% if(curState === "OPEN"){ %>
+    
+        <p>Artto is currently accepting submissions for the next selection!</p>
+    
+    <% } else if (curState === "SELECTING"){ %>
+    
+        <p>Artto is currently selecting the most aesthetic user submissions! No new submissions are accepted at this time.</p>
+        
+    <% } %>
+    
+    <hr>
+    
+</div>
 
 <% include partials/footer %>

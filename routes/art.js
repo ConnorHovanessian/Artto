@@ -3,12 +3,14 @@ var router = express.Router();
 var User = require("../models/user");
 var Submission = require("../models/submission");
 var mailUtil = require("../util/mailUtil");
+var sysParamUtil = require("../util/systemParameters");
 var constants = require("../util/constants");
 var middleware = require("../middleware");
 var fs = require('fs');
 
 //Route to render drawing application
 router.get("/art", middleware.isLoggedIn, function(req, res){
+    
     if(req.user.hasPayed && !req.user.hasSubmitted)
     {
         req.user.timeStarted = Date.now();
@@ -25,12 +27,13 @@ router.get("/art", middleware.isLoggedIn, function(req, res){
         req.flash("error", "You've alreay made a submission for this round!");
         res.redirect("/home");
     }
+    
 });
 
 //Route to create new submission
 router.post("/art/:userID", middleware.isLoggedIn, function(req, res){
     
-    if(Date.now().getTime() > req.user.timeStarted.getTime() + 65000) //Checks for 65 seconds between start and end of drawing period
+    if(Date.now() > (req.user.timeStarted.getTime() + 65000)) //Checks for 65 seconds between start and end of drawing period
     {
         req.flash("error", "You only have 60 seconds to create a piece of art!");
         res.redirect("/home");
@@ -136,17 +139,26 @@ router.get("/sell/:accountID/:token",  middleware.isLoggedIn, function(req, res)
                     }
                     else
                     {
-                        
-                        //Choose this submission for the HOF
-                        user.submissions[chosenIndex].chosenForHOF = true;
-                        user.submissions[chosenIndex].hofContender = false;
-                        user.submissions[chosenIndex].save();
-                        user.sellToken = "";
-                        user.save();
-                        
-                        req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame!");
-                        res.redirect("/hof");
-                        
+                        //Set the previous selection state to SOLD
+                        sysParamUtil.setParameterValue(constants.prevSelState, constants.prevSelState_SOLD, function(err){
+                            if(err)
+                            {
+                                console.log(err);
+                                res.redirect("/");
+                            }
+                            else
+                            {
+                                //Choose this submission for the HOF
+                                user.submissions[chosenIndex].chosenForHOF = true;
+                                user.submissions[chosenIndex].hofContender = false;
+                                user.submissions[chosenIndex].save();
+                                user.sellToken = "";
+                                user.save();
+                                
+                                req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame!");
+                                res.redirect("/hof");
+                            }
+                        });
                     }
                 });
 
@@ -204,24 +216,39 @@ router.get("/keep/:accountID/:token",  middleware.isLoggedIn, function(req, res)
                     {
                         if(!submission)
                         {
-                            req.flash("success", "Thank you for responding, and enjoy your art!");
-                            res.redirect("/home");
+                            //Set the previous selection state to KEPT
+                            sysParamUtil.setParameterValue(constants.prevSelState, constants.prevSelState_KEPT, function(err){
+                                if(err)
+                                {
+                                    console.log(err);
+                                    res.redirect("/");
+                                }
+                                else
+                                {
+                                    req.flash("success", "Thank you for responding, and enjoy your art!");
+                                    res.redirect("/home");
+                                }
+                            });
+                            
                         }
-                        User.findById(submission.artist.id, function(err, user){
-                            if(err)
-                            {
-                                console.log(err);
-                                res.redirect("/");
-                            }
-                            else
-                            {
-                                user.sellToken = "";
-                                user.save();
-                                mailUtil.sendSelectionMail(user);
-                                req.flash("success", successMessage);
-                                res.redirect("/home");
-                            }
-                        });
+                        else
+                        {
+                            User.findById(submission.artist.id, function(err, user){
+                                if(err)
+                                {
+                                    console.log(err);
+                                    res.redirect("/");
+                                }
+                                else
+                                {
+                                    user.sellToken = "";
+                                    user.save();
+                                    mailUtil.sendSelectionMail(user);
+                                    req.flash("success", successMessage);
+                                    res.redirect("/home");
+                                }
+                            });
+                        }
                     }
                 });
                 

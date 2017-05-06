@@ -41,7 +41,7 @@ systemParameters.addParameter = function(parameterName, callback){
     
 };
 
-systemParameters.getParameterValue = function(parameterName){
+systemParameters.getParameterValue = function(parameterName, callback){
     
     var paramQuery = {parameterName : parameterName};
     
@@ -49,17 +49,17 @@ systemParameters.getParameterValue = function(parameterName){
         if(err)
         {
             console.log(err);
-            return "";
+            callback(err, "");
         }
         else
         {
             if(!parameter)
             {
-                return "";
+                callback(err, "");
             }
             else
             {
-                return parameter.parameterValue;   
+                callback(null, parameter.parameterValue);
             }
         }
     });

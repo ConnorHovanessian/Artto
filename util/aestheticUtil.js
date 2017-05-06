@@ -7,6 +7,7 @@ var User = require("../models/user");
 var Submission = require("../models/submission");
 var constants = require("./constants");
 const path = require('path');
+var sysParamUtil = require("../util/systemParameters");
 
 //pick most aesthetic art submission
 aestheticUtil.pickMostAesthetic = function(){
@@ -230,7 +231,27 @@ aestheticUtil.pickMostAesthetic = function(){
                                         }
                                         else
                                         {
-                                            mailUtil.sendSelectionMail(user);
+                                            //Set the previous selection state to SELECTED
+                                            sysParamUtil.setParameterValue(constants.prevSelState, constants.prevSelState_SELECTED, function(err){
+                                                if(err)
+                                                {
+                                                    console.log(err);
+                                                }
+                                                else
+                                                {
+                                                    //Set the current selection state to OPEN
+                                                    sysParamUtil.setParameterValue(constants.prevSelState, constants.prevSelState_SELECTED, function(err){
+                                                        if(err)
+                                                        {
+                                                            console.log(err);
+                                                        }
+                                                        else
+                                                        {
+                                                            mailUtil.sendSelectionMail(user);
+                                                        }
+                                                    });
+                                                }
+                                            });
                                         }
                                     });
                                 }

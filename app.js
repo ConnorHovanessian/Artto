@@ -10,6 +10,7 @@ var express = require("express"),
     aestheticUtil = require("./util/aestheticUtil"),
     seedUtil = require("./util/seeds"),
     constants = require("./util/constants"),
+    fs = require('fs'),
     cron = require('node-cron');
 
 //requiring routes
@@ -58,12 +59,20 @@ app.use(profileRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(req){
     
-    console.log("artto started");
+    console.log("Artto started");
     
+    var debug = process.argv[2];
     
-    //seedUtil.createAdminAccount();
-
+    seedUtil.createAdminAccount();
     seedUtil.initializeSystemParameters();
+    
+    // create dirs for hof, hofContenders, and submissions
+    // if they don't exist already
+    var dirsToCreate = ["./public/hof", "./public/hofContenders", 
+                        "./public/submissions"];
+    dirsToCreate.forEach(dir => {
+        if(!fs.existsSync(dir)) fs.mkdirSync(dir);
+    });
     
     //schedule weekly round (now every 1 mins)
     cron.schedule('*/5 * * * *', function(){
