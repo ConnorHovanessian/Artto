@@ -1,25 +1,21 @@
 var express = require("express");
 var router = express.Router();
 var User = require("../models/user");
-var passport = require("passport");
 var middleware = require("../middleware");
+var constants = require("../util/constants");
 
-
-const keyPublishable = process.env.PUBLISHABLE_KEY || "pk_test_qNf1FF8I6DkUaR8nofX4F552";
-const keySecret = process.env.SECRET_KEY || "sk_test_Y0rTWBLLRZeoC8fv7dYZPtXq";
-
-const stripe = require("stripe")(keySecret);
+const stripe = require("stripe")(constants.keySecret);
 
 router.get("/charge", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
-    res.render("payments/payment", {keyPublishable:keyPublishable});
+    res.render("payments/payment", {keyPublishable: constants.keyPublishable});
     
 });
 
 router.post("/charge/:userID", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
     //charge user $1
-    var amount = 100;
+    var amount = constants.chargePerSubmission;
     
     stripe.customers.create({
      email: req.body.stripeEmail,

@@ -64,8 +64,16 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     
     var debug = process.argv[2];
     
-    seedUtil.initDebugEnv();
-    seedUtil.initializeSystemParameters();
+    seedUtil.initDebugEnv(function(err){
+        if(err)
+        {
+            console.log(err);
+        }
+        else
+        {
+            seedUtil.initializeSystemParameters();
+        }
+    });
     
     // create dirs for hof, hofContenders, and submissions
     // if they don't exist already

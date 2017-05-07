@@ -8,74 +8,74 @@ var sysParamUtil = require("./systemParameters");
 //================================================
 //Function to initialize debug environment
 //================================================
-seeds.initDebugEnv = function(){
+seeds.initDebugEnv = function(callback){
     SystemParameter.remove({}, function(err) {
         if(err)
         {
-            console.log(err);
+            callback(err);
         }
         else
         {
             console.log("removed system parameters...");
-        } 
-    });
-    
-    Submission.remove({}, function(err) {
-        if(err)
-        {
-            console.log(err);
-        }
-        else
-        {
-            console.log("removed submissions...");
-        } 
-    });
-    User.remove({}, function(err){
-       if(err)
-       {
-           console.log(err);
-       }
-       else
-       {
-           console.log("creating admin users...");
-            var newUser = new User({
-                username: "admin",
-                email: "dima.goncharov@hotmail.com",
-                verified: true
-            });
             
-            User.register(newUser, "admin", function(err, user){
-                
+            Submission.remove({}, function(err) {
                 if(err)
                 {
-                    console.log(err);
+                    callback(err);
                 }
                 else
                 {
-                    console.log("admin account created");
-                }
-                
+                    console.log("removed submissions...");
+                    User.remove({}, function(err){
+                       if(err)
+                       {
+                           callback(err);
+                       }
+                       else
+                       {
+                           console.log("creating admin users...");
+                            var newUser = new User({
+                                username: "admin",
+                                email: "dima.goncharov@hotmail.com",
+                                verified: true
+                            });
+                            
+                            User.register(newUser, "admin", function(err, user){
+                                
+                                if(err)
+                                {
+                                    callback(err);
+                                }
+                                else
+                                {
+                                    console.log("admin account created");
+                                    var newUser2 = new User({
+                                        username: "admin2",
+                                        email: "dima.goncharov@hotmail.com",
+                                        verified: true
+                                    });
+                                    
+                                    User.register(newUser2, "admin", function(err, user){
+                                        
+                                        if(err)
+                                        {
+                                            callback(err);
+                                        }
+                                        else
+                                        {
+                                            console.log("admin account created");
+                                            callback(null);
+                                        }
+                                        
+                                    });
+                                }
+                                
+                            });
+                       }
+                    });
+                } 
             });
-            
-            var newUser2 = new User({
-                username: "admin2",
-                email: "dima.goncharov@hotmail.com",
-                verified: true
-            });
-            
-            User.register(newUser2, "admin", function(err, user){
-                
-                if(err)
-                {
-                    console.log(err);
-                }
-                else
-                {
-                    console.log("admin account created");
-                }
-                
-            });
-       }
+        } 
     });
     
 };
@@ -83,7 +83,7 @@ seeds.initDebugEnv = function(){
 //================================================
 // System parameter seeds
 //================================================
-seeds.initializeSystemParameters = function(callback){
+seeds.initializeSystemParameters = function(){
     
     constants.systemParameters.forEach(param => {
         

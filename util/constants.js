@@ -28,6 +28,18 @@ constants.domain                = 'sandbox4730a071afb34d268035b65dcc4180eb.mailg
 constants.from_who              = 'support@artto.com';
 
 //================================================
+//Stripe API Keys, URLs, and Config
+//================================================
+constants.keyPublishable = process.env.PUBLISHABLE_KEY || "pk_test_qNf1FF8I6DkUaR8nofX4F552";
+constants.keySecret = process.env.SECRET_KEY || "sk_test_Y0rTWBLLRZeoC8fv7dYZPtXq";
+constants.client_id = process.env.CLIENT_ID || "ca_AbvKU4bTuaXtBnImjb3oww3umfEwRJlI";
+
+constants.stripeConnectURL = "https://connect.stripe.com/oauth/authorize?response_type=code&client_id=" 
+                             + constants.client_id + "&scope=read_write";
+
+constants.chargePerSubmission = 100; //in cents
+
+//================================================
 //Application URL
 //================================================
 constants.appURL                = process.env.APPURL || "https://lottery-bomjak.c9users.io";
