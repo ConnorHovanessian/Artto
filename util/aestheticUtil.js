@@ -9,7 +9,29 @@ var constants = require("./constants");
 const path = require('path');
 var sysParamUtil = require("../util/systemParameters");
 
-//pick most aesthetic art submission
+// Set the current selection state to OPEN. Set to be run regularly
+// before the aesthetic art selection via a cronjob in order to set up 
+// a blackout period where users can't make any new submissions.
+aestheticUtil.blackout = function(){
+    
+    sysParamUtil.setParameterValue(constants.curSelState, constants.curSelState_SELECTING, 
+    function(err){
+        
+        if(err)
+        {
+            console.log(err);
+        }
+        else
+        {
+            console.log("Setting system state to SELECTING.");
+        }
+        
+    });
+    
+};
+
+// Picks the configured number of most aesthetic user submission. Set to
+// be run regularly via a cronjob.
 aestheticUtil.pickMostAesthetic = function(){
     
     console.log("Choosing most aesthetic artists...");
@@ -48,6 +70,22 @@ aestheticUtil.pickMostAesthetic = function(){
         }
         else
         {
+            //If there are no submissions
+            if(files.length === 0)
+            {
+                //Set the current selection state to OPEN
+                sysParamUtil.setParameterValue(constants.curSelState, constants.curSelState_OPEN, function(err){
+                    if(err)
+                    {
+                        console.log(err);
+                    }
+                    else
+                    {
+                        console.log("No submissions for this selection, setting system state to OPEN.");
+                    }
+                });
+            }
+            
             files.forEach(file => {
                 getPixels(submissionDir + file, function(err, pixels)
                 {
@@ -163,7 +201,6 @@ aestheticUtil.pickMostAesthetic = function(){
                                         });
                                         submission.rank++;
                                         submission.hofContender = true;
-                                        console.log(submission);
                                         submission.save();
                                     }
                                 });
@@ -240,13 +277,14 @@ aestheticUtil.pickMostAesthetic = function(){
                                                 else
                                                 {
                                                     //Set the current selection state to OPEN
-                                                    sysParamUtil.setParameterValue(constants.prevSelState, constants.prevSelState_SELECTED, function(err){
+                                                    sysParamUtil.setParameterValue(constants.curSelState, constants.curSelState_OPEN, function(err){
                                                         if(err)
                                                         {
                                                             console.log(err);
                                                         }
                                                         else
                                                         {
+                                                            console.log("Finished selecting most aesthetic artists, setting system state to OPEN.");
                                                             mailUtil.sendSelectionMail(user);
                                                         }
                                                     });

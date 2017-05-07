@@ -48,6 +48,7 @@ app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     res.locals.error =  req.flash("error");
     res.locals.success =  req.flash("success");
+    res.locals.warning =  req.flash("warning");
     next();
 });
 
@@ -63,7 +64,7 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     
     var debug = process.argv[2];
     
-    seedUtil.createAdminAccount();
+    seedUtil.initDebugEnv();
     seedUtil.initializeSystemParameters();
     
     // create dirs for hof, hofContenders, and submissions
@@ -74,7 +75,14 @@ app.listen(process.env.PORT, process.env.IP, function(req){
         if(!fs.existsSync(dir)) fs.mkdirSync(dir);
     });
     
-    //schedule weekly round (now every 1 mins)
+    // Prevent new user submissions (now every 4 mins)
+    // until pickMostAesthetic() is finished executing.
+    cron.schedule('4,9,14,19,24,29,34,39,44,49,54,59 * * * *', function(){
+        aestheticUtil.blackout();
+    });
+    
+    // Schedule the selection of the most aesthetic 
+    // submissions (now every 5 mins).
     cron.schedule('*/5 * * * *', function(){
         aestheticUtil.pickMostAesthetic();
     });

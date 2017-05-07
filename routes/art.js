@@ -9,7 +9,7 @@ var middleware = require("../middleware");
 var fs = require('fs');
 
 //Route to render drawing application
-router.get("/art", middleware.isLoggedIn, function(req, res){
+router.get("/art", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
     if(req.user.hasPayed && !req.user.hasSubmitted)
     {
@@ -31,7 +31,7 @@ router.get("/art", middleware.isLoggedIn, function(req, res){
 });
 
 //Route to create new submission
-router.post("/art/:userID", middleware.isLoggedIn, function(req, res){
+router.post("/art/:userID", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
     if(Date.now() > (req.user.timeStarted.getTime() + 65000)) //Checks for 65 seconds between start and end of drawing period
     {
@@ -110,7 +110,7 @@ router.post("/art/:userID", middleware.isLoggedIn, function(req, res){
 });
 
 //Route to sell submission to Hall of Fame
-router.get("/sell/:accountID/:token",  middleware.isLoggedIn, function(req, res){
+router.get("/sell/:accountID/:token",  [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
     User.findById(req.params.accountID).populate("submissions").exec(function(err, user){
     
@@ -175,7 +175,7 @@ router.get("/sell/:accountID/:token",  middleware.isLoggedIn, function(req, res)
 });
 
 //Router to keep art submission
-router.get("/keep/:accountID/:token",  middleware.isLoggedIn, function(req, res){
+router.get("/keep/:accountID/:token",  [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
     User.findById(req.params.accountID).populate("submissions").exec(function(err, user){
     

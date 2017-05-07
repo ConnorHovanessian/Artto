@@ -10,11 +10,13 @@ const keySecret = process.env.SECRET_KEY || "sk_test_Y0rTWBLLRZeoC8fv7dYZPtXq";
 
 const stripe = require("stripe")(keySecret);
 
-router.get("/charge", middleware.isLoggedIn, function(req, res){
+router.get("/charge", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
+    
     res.render("payments/payment", {keyPublishable:keyPublishable});
+    
 });
 
-router.post("/charge/:userID", middleware.isLoggedIn, function(req, res){
+router.post("/charge/:userID", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
     //charge user $1
     var amount = 100;

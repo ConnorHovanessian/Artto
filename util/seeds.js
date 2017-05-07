@@ -1,13 +1,25 @@
 var seeds = {};
 var User = require("../models/user");
 var Submission = require("../models/submission");
+var SystemParameter = require("../models/systemParameter");
 var constants = require("./constants");
 var sysParamUtil = require("./systemParameters");
 
 //================================================
-//Function for admin account seed
+//Function to initialize debug environment
 //================================================
-seeds.createAdminAccount = function(){
+seeds.initDebugEnv = function(){
+    SystemParameter.remove({}, function(err) {
+        if(err)
+        {
+            console.log(err);
+        }
+        else
+        {
+            console.log("removed system parameters...");
+        } 
+    });
+    
     Submission.remove({}, function(err) {
         if(err)
         {

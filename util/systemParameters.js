@@ -1,7 +1,8 @@
 var systemParameters = {};
+
 var SystemParameter = require("../models/systemParameter");
 
-
+//Function to add a system parameter
 systemParameters.addParameter = function(parameterName, callback){
     
     var param = {   parameterName   : parameterName,
@@ -41,6 +42,7 @@ systemParameters.addParameter = function(parameterName, callback){
     
 };
 
+//Function to get a system parameter value
 systemParameters.getParameterValue = function(parameterName, callback){
     
     var paramQuery = {parameterName : parameterName};
@@ -66,6 +68,7 @@ systemParameters.getParameterValue = function(parameterName, callback){
     
 };
 
+//Function to set a specific system parameter with a provided value
 systemParameters.setParameterValue = function(parameterName, parameterValue, callback){
     
     var paramQuery = {parameterName : parameterName};
