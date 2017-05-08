@@ -18,6 +18,7 @@ var hofRoutes = require("./routes/hof");
 var paymentRoutes = require("./routes/payments");
 var profileRoutes = require("./routes/profile");
 var artRoutes = require("./routes/art");
+var subCountRoutes = require("./routes/subCount");
     
 var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
 mongoose.connect(dbURL);
@@ -55,13 +56,14 @@ app.use(paymentRoutes);
 app.use(artRoutes);
 app.use(hofRoutes);
 app.use(profileRoutes);
+app.use(subCountRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(req){
     
     console.log("artto started");
     
     
-    //seedUtil.createAdminAccount();
+    seedUtil.createAdminAccount();
 
     seedUtil.initializeSystemParameters();
     

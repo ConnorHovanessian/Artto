@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var User = require("../models/user");
+var Submission = require("../models/submission");
 var passport = require("passport");
 var middleware = require("../middleware");
 var mailUtil = require("../util/mailUtil");
@@ -14,6 +15,12 @@ var request = require("request");
 
 //root route
 router.get("/", function(req, res){
+    
+    request('/subCount', function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body) // Print the body of response.
+      }
+    })
     
     res.render("landing");
 });
