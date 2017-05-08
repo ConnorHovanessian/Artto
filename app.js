@@ -65,10 +65,6 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     console.log("Artto started");
     
     var debug = process.argv[2];
-    
-
-    seedUtil.createAdminAccount();
-    seedUtil.initializeSystemParameters();
 
     seedUtil.initDebugEnv(function(err){
         if(err)
@@ -93,6 +89,7 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     // until pickMostAesthetic() is finished executing.
     cron.schedule('4,9,14,19,24,29,34,39,44,49,54,59 * * * *', function(){
         aestheticUtil.blackout();
+    });
     
     // Schedule the selection of the most aesthetic 
     // submissions (now every 5 mins).
