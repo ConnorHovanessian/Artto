@@ -8,7 +8,7 @@ var constants = require("../util/constants");
 //Route to render user profile information
 router.get("/profile", middleware.isLoggedIn, function(req, res){
     
-    res.render("profile/profile");
+    res.render("profile/profile", {stripeConnectURL:constants.stripeConnectURL});
     
 });
 

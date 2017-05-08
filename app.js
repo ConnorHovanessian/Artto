@@ -10,6 +10,7 @@ var express = require("express"),
     aestheticUtil = require("./util/aestheticUtil"),
     seedUtil = require("./util/seeds"),
     constants = require("./util/constants"),
+    fs = require('fs'),
     cron = require('node-cron');
 
 //requiring routes
@@ -48,6 +49,7 @@ app.use(function(req, res, next){
     res.locals.currentUser = req.user;
     res.locals.error =  req.flash("error");
     res.locals.success =  req.flash("success");
+    res.locals.warning =  req.flash("warning");
     next();
 });
 
@@ -60,14 +62,40 @@ app.use(subCountRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(req){
     
-    console.log("artto started");
+    console.log("Artto started");
     
+    var debug = process.argv[2];
     
-    seedUtil.createAdminAccount();
 
+    seedUtil.createAdminAccount();
     seedUtil.initializeSystemParameters();
+
+    seedUtil.initDebugEnv(function(err){
+        if(err)
+        {
+            console.log(err);
+        }
+        else
+        {
+            seedUtil.initializeSystemParameters();
+        }
+    });
     
-    //schedule weekly round (now every 1 mins)
+    // create dirs for hof, hofContenders, and submissions
+    // if they don't exist already
+    var dirsToCreate = ["./public/hof", "./public/hofContenders", 
+                        "./public/submissions"];
+    dirsToCreate.forEach(dir => {
+        if(!fs.existsSync(dir)) fs.mkdirSync(dir);
+    });
+    
+    // Prevent new user submissions (now every 4 mins)
+    // until pickMostAesthetic() is finished executing.
+    cron.schedule('4,9,14,19,24,29,34,39,44,49,54,59 * * * *', function(){
+        aestheticUtil.blackout();
+    
+    // Schedule the selection of the most aesthetic 
+    // submissions (now every 5 mins).
     cron.schedule('*/5 * * * *', function(){
         aestheticUtil.pickMostAesthetic();
     });

@@ -5,6 +5,7 @@ var Submission = require("../models/submission");
 var passport = require("passport");
 var middleware = require("../middleware");
 var mailUtil = require("../util/mailUtil");
+var sysParamUtil = require("../util/systemParameters");
 var constants = require("../util/constants");
 var crypto = require("crypto");
 var request = require("request");
@@ -41,7 +42,39 @@ router.get("/home", middleware.isLoggedIn, function(req, res){
     }
     else
     {
-        res.render("home");  
+        // load our system parameters into the template so we
+        // can display the system state on the home page
+        var curState; 
+        var prevState; 
+        
+        sysParamUtil.getParameterValue(constants.prevSelState, function(err, value){
+            if(err)
+            {
+                req.flash("error", "Oops, something went wrong.");
+                console.log(err);
+                res.render("home");
+            }
+            else
+            {
+                prevState = value;
+                
+                sysParamUtil.getParameterValue(constants.curSelState, function(err, value){
+                    
+                    if(err)
+                    {
+                        req.flash("error", "Oops, something went wrong.");
+                        console.log(err);
+                        res.render("home");
+                    }
+                    else
+                    {
+                        curState = value;
+                        res.render("home", {curState : curState, prevState : prevState}); 
+                    }
+                    
+                });
+            }
+        });
     }
 
 });
@@ -94,7 +127,8 @@ router.post("/register", function(req, res){
                 username: req.body.username,
                 email: req.body.email,
                 verifyToken: verifyToken,
-                verified: false
+                verified: false,
+                connectedToStripe: false
             });
             
             User.register(newUser, req.body.password, function(err, user){

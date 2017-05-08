@@ -11,6 +11,9 @@ var UserSchema = new mongoose.Schema({
     verified: Boolean,
     hasPayed: Boolean,
     hasSubmitted: Boolean,
+    stripe_user_id: String,
+    stripe_refresh_token: String,
+    connectedToStripe: Boolean,
     dateCreated: Date,
     timeStarted: Date,
     submissions: [

@@ -1,23 +1,62 @@
 var express = require("express");
 var router = express.Router();
 var User = require("../models/user");
-var passport = require("passport");
 var middleware = require("../middleware");
+var constants = require("../util/constants");
+var request = require("request");
 
+const stripe = require("stripe")(constants.keySecret);
 
-const keyPublishable = process.env.PUBLISHABLE_KEY || "pk_test_qNf1FF8I6DkUaR8nofX4F552";
-const keySecret = process.env.SECRET_KEY || "sk_test_Y0rTWBLLRZeoC8fv7dYZPtXq";
-
-const stripe = require("stripe")(keySecret);
-
-router.get("/charge", middleware.isLoggedIn, function(req, res){
-    res.render("payments/payment", {keyPublishable:keyPublishable});
+router.get("/charge", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
+    
+    res.render("payments/payment", {keyPublishable: constants.keyPublishable});
+    
 });
 
-router.post("/charge/:userID", middleware.isLoggedIn, function(req, res){
+router.get("/connect", middleware.isLoggedIn, function(req, res){
+        
+        if(req.query.error)
+        {
+            req.flash("error", req.query.error_description);
+            return res.redirect("/profile");
+        }
+        else
+        {
+            var form = {
+                client_secret:constants.keySecret,
+                code:req.query.code,
+                grant_type:"authorization_code"
+            };
+    
+            request.post({url:constants.stripeAccessURL, form:form}, function(err, response, body){
+                if(!err && response.statusCode === 200)
+                {
+                    var data = JSON.parse(body);
+                    req.user.stripe_user_id = data.stripe_user_id;
+                    req.user.stripe_refresh_token = data.refresh_token;
+                    req.user.connectedToStripe = true;
+                    req.user.save();
+                    console.log(req.user);
+                    req.flash("success", "Account successfully connected to Stripe!");
+                    return res.redirect("/profile");
+        
+                }
+                else
+                {
+                    req.flash("error", "Oops, something went wrong!");
+                    return res.redirect("/profile");
+                }
+                
+            });
+            
+        }
+    
+});
+
+router.post("/charge/:userID", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
     //charge user $1
-    var amount = 100;
+    var amount = constants.chargePerSubmission;
     
     stripe.customers.create({
      email: req.body.stripeEmail,

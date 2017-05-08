@@ -37,7 +37,7 @@
                         
                     <% } else{ %>
                     
-                        <li><a href="#">Signed In As <%= currentUser.username %></a></li>
+                        <li><a href="/home">Signed In As <%= currentUser.username %></a></li>
                         <li><a href="/charge">Pay</a></li>
                         <li><a href="/profile">Profile</a></li>
                         <li><a href="/hof">Hall of Fame</a></li>
@@ -57,6 +57,9 @@
         <% } %>
         <% if(success && success.length > 0){ %>
             <div class="alert alert-success" role="alert"><%= success %></div>
+        <% } %>
+        <% if(warning && warning.length > 0){ %>
+            <div class="alert alert-warning" role="alert"><%= warning %></div>
         <% } %>
     </div>
     
