@@ -120,7 +120,8 @@ router.post("/register", function(req, res){
                 username: req.body.username,
                 email: req.body.email,
                 verifyToken: verifyToken,
-                verified: false
+                verified: false,
+                connectedToStripe: false
             });
             
             User.register(newUser, req.body.password, function(err, user){
