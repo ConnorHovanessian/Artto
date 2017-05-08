@@ -43,6 +43,9 @@ constants.stripeAccessURL = "https://connect.stripe.com/oauth/token";
 
 //Config
 constants.chargePerSubmission = 100; //in cents
+constants.stripeProcessingFee = 30; //in cents
+constants.stripeServiceCharge = 0.029; //2.9 percent
+constants.appServiceCharge = 0.01; //1 percent
 
 //================================================
 //Application URL

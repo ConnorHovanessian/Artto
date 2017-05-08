@@ -62,6 +62,7 @@ aestheticUtil.pickMostAesthetic = function(){
     //get all submissions in dir
     var submissionDir = __dirname + '/../public/submissions/';
     var artScorePairs = [];
+    var totalSubmissions = 0;
     fs.readdir(submissionDir, (err, files) => {
 
         if(err)
@@ -85,6 +86,8 @@ aestheticUtil.pickMostAesthetic = function(){
                     }
                 });
             }
+            
+            totalSubmissions = files.length;
             
             files.forEach(file => {
                 getPixels(submissionDir + file, function(err, pixels)
@@ -201,6 +204,12 @@ aestheticUtil.pickMostAesthetic = function(){
                                         });
                                         submission.rank++;
                                         submission.hofContender = true;
+                                        var submissionCost = constants.chargePerSubmission 
+                                                             - Math.ceil((constants.chargePerSubmission * constants.stripeServiceCharge))
+                                                             - (constants.stripeProcessingFee);
+                                        submission.value = (totalSubmissions * submissionCost) 
+                                                          - Math.ceil((totalSubmissions * submissionCost * (constants.stripeServiceCharge + constants.appServiceCharge))) 
+                                                          - (constants.stripeProcessingFee);
                                         submission.save();
                                     }
                                 });

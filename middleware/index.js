@@ -57,4 +57,20 @@ middlewareObj.noBlackout = function(req, res, next)
     
 };
 
+//Middleware to ensure the user is connected to Stripe
+middlewareObj.connectedToStripe = function(req, res, next)
+{
+    
+    if(req.user.connectedToStripe)
+    {
+        return next();
+    }
+    else
+    {
+        req.flash("error", "Please connect your account to Stripe first!");
+        return res.redirect("/profile");
+    }
+    
+};
+
 module.exports = middlewareObj;

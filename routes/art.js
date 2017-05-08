@@ -8,6 +8,8 @@ var constants = require("../util/constants");
 var middleware = require("../middleware");
 var fs = require('fs');
 
+const stripe = require("stripe")(constants.keySecret);
+
 //Route to render drawing application
 router.get("/art", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
@@ -110,7 +112,7 @@ router.post("/art/:userID", [middleware.isLoggedIn, middleware.noBlackout], func
 });
 
 //Route to sell submission to Hall of Fame
-router.get("/sell/:accountID/:token",  [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
+router.get("/sell/:accountID/:token", [middleware.isLoggedIn, middleware.noBlackout, middleware.connectedToStripe], function(req, res){
     
     User.findById(req.params.accountID).populate("submissions").exec(function(err, user){
     
@@ -148,15 +150,31 @@ router.get("/sell/:accountID/:token",  [middleware.isLoggedIn, middleware.noBlac
                             }
                             else
                             {
-                                //Choose this submission for the HOF
-                                user.submissions[chosenIndex].chosenForHOF = true;
-                                user.submissions[chosenIndex].hofContender = false;
-                                user.submissions[chosenIndex].save();
-                                user.sellToken = "";
-                                user.save();
-                                
-                                req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame!");
-                                res.redirect("/hof");
+                                stripe.transfers.create({
+                                  amount: user.submissions[chosenIndex].value.value,
+                                  currency: "usd",
+                                  destination: user.stripe_user_id
+                                }, function(err, transfer) {
+                                    if(err)
+                                    {
+                                        console.log(err);
+                                        req.flash("error", "Oops, something went wrong.");
+                                        res.redirect("/home");
+                                    }
+                                    else
+                                    {
+                                        //Choose this submission for the HOF
+                                        user.submissions[chosenIndex].chosenForHOF = true;
+                                        user.submissions[chosenIndex].hofContender = false;
+                                        user.submissions[chosenIndex].save();
+                                        user.sellToken = "";
+                                        user.save();
+                                        
+                                        req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame! "
+                                                             + "The payment for your art has been sent to your Stripe account.");
+                                        res.redirect("/hof");
+                                    }
+                                });
                             }
                         });
                     }
