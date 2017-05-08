@@ -64,7 +64,48 @@ seeds.initDebugEnv = function(callback){
                                         else
                                         {
                                             console.log("admin account created");
-                                            callback(null);
+                                            
+                                            var newUser3 = new User({
+                                                username: "admin3",
+                                                email: "chovanes@sfu.ca",
+                                                verified: true
+                                            });
+                                            
+                                            User.register(newUser3, "admin", function(err, user){
+                                                
+                                                if(err)
+                                                {
+                                                    callback(err);
+                                                }
+                                                else
+                                                {
+                                                    console.log("admin account created");
+                                                    
+                                                    var newUser4 = new User({
+                                                        username: "admin4",
+                                                        email: "chovanes@sfu.ca",
+                                                        verified: true
+                                                    });
+                                                    
+                                                    User.register(newUser4, "admin", function(err, user){
+                                                        
+                                                        if(err)
+                                                        {
+                                                            callback(err);
+                                                        }
+                                                        else
+                                                        {
+                                                            
+                                                            console.log("admin account created");
+                                                            callback(null);
+                                                        }
+                                                        
+                                                    });
+                                                }
+                                                
+                                            });
+                                            
+                                            
                                         }
                                         
                                     });
@@ -76,43 +117,6 @@ seeds.initDebugEnv = function(callback){
                 } 
             });
             
-            var newUser3 = new User({
-                username: "admin3",
-                email: "chovanes@sfu.ca",
-                verified: true
-            });
-            
-            User.register(newUser3, "admin", function(err, user){
-                
-                if(err)
-                {
-                    console.log(err);
-                }
-                else
-                {
-                    console.log("admin account created");
-                }
-                
-            });
-            
-            var newUser4 = new User({
-                username: "admin4",
-                email: "chovanes@sfu.ca",
-                verified: true
-            });
-            
-            User.register(newUser4, "admin", function(err, user){
-                
-                if(err)
-                {
-                    console.log(err);
-                }
-                else
-                {
-                    console.log("admin account created");
-                }
-                
-            });
        }
     });
     
