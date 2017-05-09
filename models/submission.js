@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+var mongoosePaginate = require('mongoose-paginate');
 require('mongoose-double')(mongoose);
 
 var SubmissionSchema = new mongoose.Schema({
@@ -15,5 +16,7 @@ var SubmissionSchema = new mongoose.Schema({
         username: String
     }
 });
+
+SubmissionSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Submission", SubmissionSchema);

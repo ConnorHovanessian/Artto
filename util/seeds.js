@@ -173,5 +173,28 @@ seeds.initializeSystemParameters = function(){
     
 };
 
+//================================================
+// Submission seeds
+//================================================
+seeds.createDummySubmissions = function(){
+    
+    for(var i = 0; i < 20; i++)
+    {
+        var submission = {value : 0,chosenForHOF:true};
+        
+        Submission.create(submission, function(err, submission){
+            if(err)
+            {
+                console.log(err);
+            }
+            else
+            {
+                console.log("created submission");
+            }
+        });
+    }
+    
+};
+
 
 module.exports = seeds;
