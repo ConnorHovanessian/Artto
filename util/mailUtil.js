@@ -1,12 +1,11 @@
-// all midleware
 var mailUtil = {};
 
 var Mailgun = require('mailgun-js');
-
 var crypto = require("crypto");
 var constants = require("./constants");
+var Submission = require("../models/submission");
 
-mailUtil.sendMail = function(to, subject, body, error)
+mailUtil.sendMail = function(to, subject, body, error, attachment)
 {
     //We pass the api_key and domain to the wrapper, or it won't be able to identify + send emails
     var mailgun = new Mailgun({apiKey: constants.api_key, domain: constants.domain});
@@ -20,6 +19,12 @@ mailUtil.sendMail = function(to, subject, body, error)
       subject: subject,
       html: body
     };
+    
+    //attach attachment, if specified
+    if(attachment)
+    {
+      data.attachment = attachment;
+    }
 
     //Invokes the method to send emails given the above data with the helper library
     mailgun.messages().send(data, function (err, body) {
@@ -48,13 +53,31 @@ mailUtil.sendSelectionMail = function(user)
     body += '<p>Cheers,</p>';
     body += '<p>Artto Team</p>';
     
-    var error;
-    mailUtil.sendMail(user.email, subject, body, error);
-    if(error)
-    {
-      console.log(error);
-    }
-    
+    //find hof contender belonging to this user so we can attach it to the email
+    Submission.find({ hofContender : true }, function(err, submissions){
+      
+      if(err)
+      {
+        console.log(err);
+      }
+      else
+      {
+          submissions.forEach(submission => {
+        
+            if(submission.artist.id.equals(user._id))
+            {
+              var error;
+              var attachment = __dirname + '/../public/hofContenders/' + submission._id + '.png';
+              
+              mailUtil.sendMail(user.email, subject, body, error, attachment);
+              if(error)
+              {
+                console.log(error);
+              }
+            }
+        });
+      }
+    });
 };
 
 
