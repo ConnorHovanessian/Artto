@@ -336,4 +336,38 @@ router.post("/resetPassword", function(req, res){
     
 });
 
+
+//show contact form
+router.get("/contact", function(req, res){
+    res.render("contact");
+});
+
+//handle contact logic
+router.post("/contact", function(req, res){
+    
+    //Check to make sure subject and message are filled out
+    if(req.body.subject=="" || req.body.message=="")
+    {
+        req.flash("error", "Subject and Body must be filled out!");
+        return res.redirect("/contact");
+    }
+    
+    var to_whom = "arttoteam@gmail.com"
+    var subject = req.body.subject;
+    var body = req.body.message;
+    var error;
+    
+    mailUtil.sendMail(to_whom, subject, body, error);
+    
+    if(error)
+    {
+        console.log(error);
+        req.flash("error", error);
+        res.redirect("/contact");
+    }
+                
+    req.flash("success", "Your message was sent! Thanks for contacting us!");
+    return res.redirect("/");
+});
+
 module.exports = router;
