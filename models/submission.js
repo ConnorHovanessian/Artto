@@ -7,6 +7,7 @@ var SubmissionSchema = new mongoose.Schema({
     rank: Number,
     chosenForHOF: Boolean,
     hofContender: Boolean,
+    title: String,
     value: mongoose.Schema.Types.Double,
     artist: {
         id: {

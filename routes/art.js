@@ -6,6 +6,7 @@ var mailUtil = require("../util/mailUtil");
 var sysParamUtil = require("../util/systemParameters");
 var constants = require("../util/constants");
 var middleware = require("../middleware");
+var randomWords = require('random-words');
 var fs = require('fs');
 
 const stripe = require("stripe")(constants.keySecret);
@@ -71,12 +72,17 @@ router.post("/art/:userID", [middleware.isLoggedIn, middleware.noBlackout], func
                     }
                     else
                     {
+                        // if the user didn't specify a title, generate a random one
+                        var title = (req.body.title === "") ? 
+                                    randomWords({ min: 2, max: 4, join: ' ' }) : req.body.title;
+                        
                         submission.artist.id = user._id;
                         submission.artist.username = user.username;
                         submission.chosenForHOF = false;
                         submission.hofContender = false;
                         submission.rank = 0;
                         submission.dateSubmitted = Date.now();
+                        submission.title = title;
                         submission.save();
                         
                         user.submissions.push(submission);
