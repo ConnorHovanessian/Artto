@@ -16,13 +16,6 @@ var request = require("request");
 
 //root route
 router.get("/", function(req, res){
-    
-    request('/subCount', function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body) // Print the body of response.
-      }
-    })
-    
     res.render("landing");
 });
 
@@ -338,12 +331,12 @@ router.post("/resetPassword", function(req, res){
 
 
 //show contact form
-router.get("/contact", function(req, res){
+router.get("/contact", middleware.isLoggedIn, function(req, res){
     res.render("contact");
 });
 
 //handle contact logic
-router.post("/contact", function(req, res){
+router.post("/contact", middleware.isLoggedIn, function(req, res){
     
     //Check to make sure subject and message are filled out
     if(req.body.subject=="" || req.body.message=="")
@@ -354,7 +347,10 @@ router.post("/contact", function(req, res){
     
     var to_whom = "arttoteam@gmail.com"
     var subject = req.body.subject;
-    var body = req.body.message;
+    var body = "<p>" + req.body.message + "</p>";
+    body += "<p>From your friend, " + req.user.username + "</p>";
+    body += "<p>Contact at " + req.user.email + "</p>";
+    
     var error;
     
     mailUtil.sendMail(to_whom, subject, body, error);
@@ -365,7 +361,7 @@ router.post("/contact", function(req, res){
         req.flash("error", error);
         res.redirect("/contact");
     }
-                
+    
     req.flash("success", "Your message was sent! Thanks for contacting us!");
     return res.redirect("/");
 });
