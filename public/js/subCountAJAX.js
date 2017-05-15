@@ -1,12 +1,11 @@
 
 $(document).ready(function(){
-    update();
-    window.setInterval(update, 2000);
+    updateCount();
+    window.setInterval(updateCount, 2000);
 });
 
-function update(){
+function updateCount(){
     $.get("/subCount", function(data, status){
-        console.log(data);
         var result = JSON.parse(data);
         $("#subs").text(result.subCount);
     });

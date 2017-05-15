@@ -20,6 +20,7 @@ var paymentRoutes = require("./routes/payments");
 var profileRoutes = require("./routes/profile");
 var artRoutes = require("./routes/art");
 var subCountRoutes = require("./routes/subCount");
+var timeLeftRoutes = require("./routes/timeLeft");
     
 var dbURL = process.env.DATABASEURL || "mongodb://localhost/lotto"
 mongoose.connect(dbURL);
@@ -59,6 +60,7 @@ app.use(artRoutes);
 app.use(hofRoutes);
 app.use(profileRoutes);
 app.use(subCountRoutes);
+app.use(timeLeftRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function(req){
     
