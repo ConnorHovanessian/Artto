@@ -180,7 +180,7 @@ seeds.createDummySubmissions = function(){
     
     for(var i = 0; i < 20; i++)
     {
-        var submission = {value : 0,chosenForHOF:true};
+        var submission = {value : {value:550},chosenForHOF:true,artist:{username:"lol"},dateSubmitted:Date.now(),title:"yoyoyo"};
         
         Submission.create(submission, function(err, submission){
             if(err)

@@ -42,6 +42,7 @@ $(document).ready(function() {
 
             
             $.get("/hofPage?page=" + page, function(data, status){
+                spinner.stop();
                 var result = JSON.parse(data);
                 if(result.error)
                 {
@@ -51,11 +52,27 @@ $(document).ready(function() {
                 else
                 {
                     result.docs.forEach(submission =>{
-                        var elem = document.createElement("img");
-                        elem.setAttribute("src", "/hof/" + submission._id + ".png");
-                        elem.setAttribute("alt", "submission");
-                        elem.setAttribute("class", "img-thumbnail");
-                        target.appendChild(elem);
+                        $("#submissions").append(`
+
+                            <div class="col-md-12">
+                                <div class="thumbnail">
+                                    <div class="caption-full">
+                                        <h2 style="text-align: center;">${submission.title}</h2>
+                                        
+                                    </div>
+                                    <img class="img-responsive img-thumbnail" src="/hof/${submission._id}.png" alt="submission">
+                                    <div class="caption-full">
+                                        
+                                        <h4 style="text-align: center;">Estimated value: $${submission.value.value / 100}</h4>
+                                        <p style="text-align: center;">
+                                            <em>Submitted by: ${submission.artist.username} on ${submission.dateSubmitted.toLocaleString()}</em>
+                                        </p>
+                                    </div>
+                                        
+                                </div>
+                            </div>
+                            
+                        `);
                     });
 
                     page++;
@@ -68,4 +85,5 @@ $(document).ready(function() {
        }
        
     });
+
 });
