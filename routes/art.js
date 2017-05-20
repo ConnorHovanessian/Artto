@@ -120,12 +120,19 @@ router.post("/art/:userID", [middleware.isLoggedIn, middleware.noBlackout], func
 //Route to sell submission to Hall of Fame
 router.get("/sell/:accountID/:token", [middleware.isLoggedIn, middleware.noBlackout, middleware.connectedToStripe], function(req, res){
     
+    //Make sure the correct user is trying to sell the art
+    if(!req.user._id.equals(req.params.accountID))
+    {
+        req.flash("error", "You cannot sell another user's submission!");
+        return res.redirect("/home");
+    }
+    
     User.findById(req.params.accountID).populate("submissions").exec(function(err, user){
     
         if(err)
         {
             console.log(err);
-            res.redirect("/");
+            return res.redirect("/");
         }
         else
         {
@@ -201,12 +208,19 @@ router.get("/sell/:accountID/:token", [middleware.isLoggedIn, middleware.noBlack
 //Router to keep art submission
 router.get("/keep/:accountID/:token",  [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
     
+    //Make sure the correct user is trying to keep the art
+    if(!req.user._id.equals(req.params.accountID))
+    {
+        req.flash("error", "You cannot keep another user's submission!");
+        return res.redirect("/home");
+    }
+    
     User.findById(req.params.accountID).populate("submissions").exec(function(err, user){
     
         if(err)
         {
             console.log(err);
-            res.redirect("/");
+            return res.redirect("/");
         }
         else
         {
