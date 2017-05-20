@@ -97,75 +97,92 @@ router.post("/register", function(req, res){
         return res.redirect("/register");
     }
     
-    var form = {
-        secret:constants.captchaSecret,
-        response:req.body["g-recaptcha-response"]
-        //optional IP
-    };
-
-    request.post({url:constants.captchaURL, form:form}, function(err, response, body){
-        if(!err && response.statusCode === 200)
+    User.find({email:req.body.email}, function(err,users){
+        if(err)
         {
-            var data = JSON.parse(body);
-            if(!data.success)
-            {
-                req.flash("error", "Captcha rejected!");
-                return res.redirect("/register");
-            }
-            
-            //generate verification token
-            var verifyToken = crypto.randomBytes(32).toString('hex');
-            
-            var newUser = new User({
-                username: req.body.username,
-                email: req.body.email,
-                verifyToken: verifyToken,
-                verified: false,
-                connectedToStripe: false
-            });
-            
-            User.register(newUser, req.body.password, function(err, user){
-        
-                if(err)
-                {
-                    req.flash("error", err.message);
-                    return res.redirect("/register");
-                }
-                
-                else //success
-                {
-                    var url = req.originalUrl.split("/")[0];
-                    var fullUrl = req.protocol + '://' + req.get('host') + url + "/verify/" + user._id + "/" + verifyToken;
-                    
-                    var subject = "Verify your Artto account.";
-                    
-                    var body = '<p>Hi ' + user.username + ',</p>';
-                    body += '<p>Thanks for signing up with Artto! Please click on the following link to verify your Artto account:</p> ';
-                    body += ' <p><a href="' + fullUrl + '">Verify</a></p>';
-                    body += '<p>Cheers,</p>';
-                    body += '<p>Artto Team</p>';
-                    
-                    var error;
-                    mailUtil.sendMail(user.email, subject, body, error);
-                    if(error)
-                    {
-                        console.log(error);
-                    }
-                    
-                    req.flash("success", "Successfully created account! Please verify your email address to login.");
-                    return res.redirect("/login");
-                }
-                
-            });
-
+            console.log(err);
+            return res.redirect("/");
+        }
+        else if(users && users.length > 0)
+        {
+            req.flash("error", `User with email ${req.body.email} already exists!`);
+            return res.redirect("/register");
         }
         else
         {
-            req.flash("error", "Captcha rejected!");
-            return res.redirect("/register");
-        }
+                    
+            var form = {
+                secret:constants.captchaSecret,
+                response:req.body["g-recaptcha-response"]
+                //optional IP
+            };
         
+            request.post({url:constants.captchaURL, form:form}, function(err, response, body){
+                if(!err && response.statusCode === 200)
+                {
+                    var data = JSON.parse(body);
+                    if(!data.success)
+                    {
+                        req.flash("error", "Captcha rejected!");
+                        return res.redirect("/register");
+                    }
+                    
+                    //generate verification token
+                    var verifyToken = crypto.randomBytes(32).toString('hex');
+                    
+                    var newUser = new User({
+                        username: req.body.username,
+                        email: req.body.email,
+                        verifyToken: verifyToken,
+                        verified: false,
+                        connectedToStripe: false
+                    });
+                    
+                    User.register(newUser, req.body.password, function(err, user){
+                
+                        if(err)
+                        {
+                            req.flash("error", err.message);
+                            return res.redirect("/register");
+                        }
+                        
+                        else //success
+                        {
+                            var url = req.originalUrl.split("/")[0];
+                            var fullUrl = req.protocol + '://' + req.get('host') + url + "/verify/" + user._id + "/" + verifyToken;
+                            
+                            var subject = "Verify your Artto account.";
+                            
+                            var body = '<p>Hi ' + user.username + ',</p>';
+                            body += '<p>Thanks for signing up with Artto! Please click on the following link to verify your Artto account:</p> ';
+                            body += ' <p><a href="' + fullUrl + '">Verify</a></p>';
+                            body += '<p>Cheers,</p>';
+                            body += '<p>Artto Team</p>';
+                            
+                            var error;
+                            mailUtil.sendMail(user.email, subject, body, error);
+                            if(error)
+                            {
+                                console.log(error);
+                            }
+                            
+                            req.flash("success", "Successfully created account! Please verify your email address to login.");
+                            return res.redirect("/login");
+                        }
+                        
+                    });
+        
+                }
+                else
+                {
+                    req.flash("error", "Captcha rejected!");
+                    return res.redirect("/register");
+                }
+                
+            });
+        }
     });
+    
     
 });
 
