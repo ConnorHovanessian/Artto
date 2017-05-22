@@ -76,8 +76,7 @@ app.listen(process.env.PORT, process.env.IP, function(req){
         else
         {
             seedUtil.initializeSystemParameters();
-            //seedUtil.createDummySubmissions();
-            
+            //seedUtil.createDummySubmissions();       
         }
     });
     

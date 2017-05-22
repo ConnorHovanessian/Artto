@@ -8,6 +8,7 @@ var Submission = require("../models/submission");
 var constants = require("./constants");
 const path = require('path');
 var sysParamUtil = require("../util/systemParameters");
+var crypto = require('crypto');
 
 // Set the current selection state to OPEN. Set to be run regularly
 // before the aesthetic art selection via a cronjob in order to set up 
@@ -51,10 +52,10 @@ aestheticUtil.pickMostAesthetic = function(){
     {
         for(var j = 0; j < height; j++)
         {
-            var r = Math.floor(Math.random() * (255 - 0 + 1));
-            var g = Math.floor(Math.random() * (255 - 0 + 1));
-            var b = Math.floor(Math.random() * (255 - 0 + 1));
-            var a = Math.random();
+            var r = parseInt(crypto.randomBytes(4).toString('hex'), 16) % 256;
+            var g = parseInt(crypto.randomBytes(4).toString('hex'), 16) % 256;
+            var b = parseInt(crypto.randomBytes(4).toString('hex'), 16) % 256;
+            var a = (parseInt(crypto.randomBytes(4).toString('hex'), 16) % 256) / 256;
             refPiece[i][j] = {r:r, g:g, b:b, a:a};
         }
     }
