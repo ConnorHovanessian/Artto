@@ -41,7 +41,6 @@ router.post("/art/:userID", [middleware.isLoggedIn, middleware.noBlackout], func
         req.flash("error", "You only have 60 seconds to create a piece of art!");
         res.redirect("/home");
     }
-
     else if(!req.user.hasPayed)
     {
         req.flash("error", "You must pay before creating a submission!");

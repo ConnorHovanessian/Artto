@@ -75,15 +75,31 @@ aestheticUtil.pickMostAesthetic = function(){
             //If there are no submissions
             if(files.length === 0)
             {
-                //Set the current selection state to OPEN
-                sysParamUtil.setParameterValue(constants.curSelState, constants.curSelState_OPEN, function(err){
+                //Reset user states
+                User.find({}, function(err, users){
                     if(err)
                     {
                         console.log(err);
                     }
                     else
                     {
-                        console.log("No submissions for this selection, setting system state to OPEN.");
+                        users.forEach(function(userToReset){
+                            userToReset.hasSubmitted = false;
+                            userToReset.hasPayed = false;
+                            userToReset.save();
+                        });
+
+                        //Set the current selection state to OPEN
+                        sysParamUtil.setParameterValue(constants.curSelState, constants.curSelState_OPEN, function(err){
+                            if(err)
+                            {
+                                console.log(err);
+                            }
+                            else
+                            {
+                                console.log("No submissions for this selection, setting system state to OPEN.");
+                            }
+                        });
                     }
                 });
             }
@@ -243,22 +259,6 @@ aestheticUtil.pickMostAesthetic = function(){
                                             });
                                         }
                                         
-                                    });
-                                }
-                            });
-                            
-                            //Reset user states
-                            User.find({}, function(err, users){
-                                if(err)
-                                {
-                                    console.log(err);
-                                }
-                                else
-                                {
-                                    users.forEach(function(userToReset){
-                                        userToReset.hasSubmitted = false;
-                                        userToReset.hasPayed = false;
-                                        userToReset.save();
                                     });
                                 }
                             });
