@@ -31,7 +31,10 @@ function submitArt()
 }
 
 function timer() {
-  count--;
+  if (count>0)
+  {
+    count--;
+  }
   display.textContent = count; 
   if (count <= 0)
   {
