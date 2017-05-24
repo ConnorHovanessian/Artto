@@ -13,6 +13,7 @@ var count = 60;
 var display;
 
 window.onload = function () {
+    $("#submitButton").click(submitArt);
     display = document.querySelector('#time');
     display.textContent = count; 
     setInterval(timer, 1000);

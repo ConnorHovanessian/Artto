@@ -8,8 +8,22 @@ var request = require("request");
 const stripe = require("stripe")(constants.keySecret);
 
 router.get("/charge", [middleware.isLoggedIn, middleware.noBlackout], function(req, res){
-    
-    res.render("payments/payment", {keyPublishable: constants.keyPublishable});
+
+    if(!req.user.hasPayed && !req.user.hasSubmitted)
+    {
+        req.flash("success", "Please pay the submission fee to be able to create a submission for this round!");
+        return res.render("payments/payment", {keyPublishable: constants.keyPublishable});
+    }
+    else if(req.user.hasPayed && !req.user.hasSubmitted)
+    {
+        req.flash("success", "You have already paid the subission fee for this round, make some art!");
+        return res.redirect("/art");
+    }
+    else if(req.user.hasPayed  && req.user.hasSubmitted)
+    {
+        req.flash("warning", "You have already created a submission for this round!");
+        return res.redirect("/home");
+    }   
     
 });
 
@@ -74,7 +88,7 @@ router.post("/charge/:userID", [middleware.isLoggedIn, middleware.noBlackout], f
         {
             req.user.hasPayed = true;
             req.user.save();
-            req.flash("success", "Payment successful! Make some art.");
+            req.flash("success", "Payment successful! Make some art!");
             res.redirect("/art");
         }
         else
