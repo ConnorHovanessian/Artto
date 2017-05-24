@@ -71,9 +71,16 @@ router.post("/art/:userID", [middleware.isLoggedIn, middleware.noBlackout], func
                     }
                     else
                     {
-                        // if the user didn't specify a title, generate a random one
-                        var title = (req.body.title === "") ? 
-                                    randomWords({ min: 2, max: 4, join: ' ' }) : req.body.title;
+                        // if the user didn't specify a title, or they specified one over 40 characters, generate a random one
+                        if (req.body.title.length > 40)
+                        {
+                            var title = randomWords({ min: 2, max: 4, join: ' ' });
+                        }
+                        else
+                        {
+                            var title = (req.body.title === "") ? 
+                                randomWords({ min: 2, max: 4, join: ' ' }) : req.body.title;
+                        }
                         
                         submission.artist.id = user._id;
                         submission.artist.username = user.username;
