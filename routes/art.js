@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require("../models/user");
 var Submission = require("../models/submission");
 var mailUtil = require("../util/mailUtil");
+var paymentUtil = require("../util/paymentUtil");
 var sysParamUtil = require("../util/systemParameters");
 var constants = require("../util/constants");
 var middleware = require("../middleware");
@@ -169,31 +170,21 @@ router.get("/sell/:accountID/:token", [middleware.isLoggedIn, middleware.noBlack
                             }
                             else
                             {
-                                stripe.transfers.create({
-                                  amount: user.submissions[chosenIndex].value.value,
-                                  currency: "usd",
-                                  destination: user.stripe_user_id
-                                }, function(err, transfer) {
-                                    if(err)
-                                    {
-                                        console.log(err);
-                                        req.flash("error", "Oops, something went wrong.");
-                                        res.redirect("/home");
-                                    }
-                                    else
-                                    {
-                                        //Choose this submission for the HOF
-                                        user.submissions[chosenIndex].chosenForHOF = true;
-                                        user.submissions[chosenIndex].hofContender = false;
-                                        user.submissions[chosenIndex].save();
-                                        user.sellToken = "";
-                                        user.save();
-                                        
-                                        req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame! "
-                                                             + "The payment for your art has been sent to your Stripe account.");
-                                        res.redirect("/hof");
-                                    }
-                                });
+                                //Schedule user payment
+                                paymentUtil.scheduleUserPayment(
+                                    user.submissions[chosenIndex].value.value, user.stripe_user_id);
+
+                                //Choose this submission for the HOF
+                                user.submissions[chosenIndex].chosenForHOF = true;
+                                user.submissions[chosenIndex].hofContender = false;
+                                user.submissions[chosenIndex].save();
+                                user.sellToken = "";
+                                user.save();
+                                
+                                req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame! "
+                                                        + "The payment for your art will be sent to your Stripe account in 7 days.");
+                                res.redirect("/hof");
+
                             }
                         });
                     }
