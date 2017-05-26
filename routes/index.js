@@ -19,6 +19,11 @@ router.get("/", function(req, res){
     res.render("landing");
 });
 
+//faq route
+router.get("/faq", function(req, res){
+    res.render("faq");
+});
+
 
 //========================================================
 // AUTH ROUTES
@@ -420,5 +425,6 @@ router.post("/contact", middleware.isLoggedIn, function(req, res){
     req.flash("success", "Your message was sent! Thanks for contacting us!");
     return res.redirect("/");
 });
+
 
 module.exports = router;
