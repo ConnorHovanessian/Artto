@@ -170,20 +170,30 @@ router.get("/sell/:accountID/:token", [middleware.isLoggedIn, middleware.noBlack
                             }
                             else
                             {
-                                //Schedule user payment
-                                paymentUtil.scheduleUserPayment(
-                                    user.submissions[chosenIndex].value.value, user.stripe_user_id);
+                                //Reset the currently selected user ID 
+                                sysParamUtil.setParameterValue(constants.curSelUserID, "", function(err){
+                                    if(err)
+                                    {
+                                        console.log(err);
+                                    }
+                                    else
+                                    {
+                                        //Schedule user payment
+                                        paymentUtil.scheduleUserPayment(
+                                            user.submissions[chosenIndex].value.value, user.stripe_user_id);
 
-                                //Choose this submission for the HOF
-                                user.submissions[chosenIndex].chosenForHOF = true;
-                                user.submissions[chosenIndex].hofContender = false;
-                                user.submissions[chosenIndex].save();
-                                user.sellToken = "";
-                                user.save();
-                                
-                                req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame! "
-                                                        + "The payment for your art will be sent to your Stripe account in 7 days.");
-                                res.redirect("/hof");
+                                        //Choose this submission for the HOF
+                                        user.submissions[chosenIndex].chosenForHOF = true;
+                                        user.submissions[chosenIndex].hofContender = false;
+                                        user.submissions[chosenIndex].save();
+                                        user.sellToken = "";
+                                        user.save();
+                                        
+                                        req.flash("success", "Congratulations, your art is now in the Artto Hall of Fame! "
+                                                                + "The payment for your art will be sent to your Stripe account in 7 days.");
+                                        res.redirect("/hof");
+                                    }
+                                });  
 
                             }
                         });
@@ -260,15 +270,25 @@ router.get("/keep/:accountID/:token",  [middleware.isLoggedIn, middleware.noBlac
                                 }
                                 else
                                 {
-                                    req.flash("success", "Thank you for responding, and enjoy your art!");
-                                    res.redirect("/home");
+                                    //Reset the currently selected user ID 
+                                    sysParamUtil.setParameterValue(constants.curSelUserID, "", function(err){
+                                        if(err)
+                                        {
+                                            console.log(err);
+                                        }
+                                        else
+                                        {
+                                            req.flash("success", "Thank you for responding, and enjoy your art!");
+                                            res.redirect("/home");
+                                        }
+                                    });  
                                 }
                             });
                             
                         }
                         else
                         {
-                            User.findById(submission.artist.id, function(err, user){
+                            User.findById(submission.artist.id, function(err, nextUser){
                                 if(err)
                                 {
                                     console.log(err);
@@ -276,11 +296,21 @@ router.get("/keep/:accountID/:token",  [middleware.isLoggedIn, middleware.noBlac
                                 }
                                 else
                                 {
-                                    user.sellToken = "";
-                                    user.save();
-                                    mailUtil.sendSelectionMail(user);
-                                    req.flash("success", successMessage);
-                                    res.redirect("/home");
+                                    //Set the currently selected user ID to the next selected user ID
+                                    sysParamUtil.setParameterValue(constants.curSelUserID, nextUser._id, function(err){
+                                        if(err)
+                                        {
+                                            console.log(err);
+                                        }
+                                        else
+                                        {
+                                            user.sellToken = "";
+                                            user.save();
+                                            mailUtil.sendSelectionMail(nextUser);
+                                            req.flash("success", successMessage);
+                                            res.redirect("/home");
+                                        }
+                                    });
                                 }
                             });
                         }

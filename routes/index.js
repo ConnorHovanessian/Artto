@@ -39,6 +39,7 @@ router.get("/home", middleware.isLoggedIn, function(req, res){
         // can display the system state on the home page
         var curState; 
         var prevState; 
+        var foundSubmission;
         
         sysParamUtil.getParameterValue(constants.prevSelState, function(err, value){
             if(err)
@@ -62,7 +63,44 @@ router.get("/home", middleware.isLoggedIn, function(req, res){
                     else
                     {
                         curState = value;
-                        res.render("home", {curState : curState, prevState : prevState}); 
+
+                        sysParamUtil.getParameterValue(constants.curSelUserID, function(err, value){
+                    
+                            if(err)
+                            {
+                                req.flash("error", "Oops, something went wrong.");
+                                console.log(err);
+                                res.render("home");
+                            }
+                            else
+                            {
+                                //if the current user is the selected user, pass the selected
+                                //submission to the template
+                                if(req.user._id.equals(value))
+                                {
+                                    //find the user's selected submission
+                                    Submission.find({hofContender: true}, function(err, submissions){
+                                        submissions.forEach(submission => {
+                                            if(req.user._id.equals(submission.artist.id))
+                                            {
+                                                foundSubmission = submission;
+                                                res.render("home", 
+                                                    {   curState : curState, 
+                                                        prevState : prevState, 
+                                                        submission: foundSubmission}); 
+                                            }
+                                        });
+                                    });
+                                }
+                                //else just render the home page as usual
+                                else
+                                {
+                                    res.render("home", {curState : curState, prevState : prevState}); 
+                                }
+                            }
+                            
+                        });
+                        
                     }
                     
                 });

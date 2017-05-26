@@ -66,7 +66,8 @@ constants.submissionHeight      = 576;
 // all system wide parameter value names go here
 constants.curSelState           = "current_selection_state";
 constants.prevSelState          = "previous_selection_state";
-constants.systemParameters      = [constants.curSelState, constants.prevSelState];
+constants.curSelUserID          = "currently_selected_userID";
+constants.systemParameters      = [constants.curSelState, constants.prevSelState, constants.curSelUserID];
 
 // possible states for current selection
 constants.curSelState_OPEN      = "OPEN";

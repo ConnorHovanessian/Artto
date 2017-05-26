@@ -6,6 +6,22 @@
     <h1>WELCOME HOME!!</h1>
 
     <hr>
+
+    <% if(typeof submission !== 'undefined'){ %>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <h2><strong>Congratulations, your submission "<%= submission.title %> was selected!</strong></h2>
+                <a href="/sell/<%= currentUser._id %>/<%= currentUser.sellToken %>" class="btn btn-success">Sell Submission</a>
+                <a href="/keep/<%= currentUser._id %>/<%= currentUser.sellToken %>" class="btn btn-warning">Keep Submission</a>
+                <p>Download submission:</p>
+                <a href="/hofContenders/<%= submission._id %>.png" download="<%= submission.title %>.png"><img src="/hofContenders/<%= submission._id %>.png" class="img-responsive" style="max-height: 100px"></a>
+            </div>
+        </div>
+        
+    <% } %>
+ 
+    <hr>
     
     <h3>State of previous selections:</h3>
     

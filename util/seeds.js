@@ -167,6 +167,21 @@ seeds.initializeSystemParameters = function(){
                         }
                     });
             }
+            else if(param === constants.curSelUserID)
+            {
+                sysParamUtil.setParameterValue(
+                    param, "", function(err){
+                        if(err)
+                        {
+                            console.log(err);
+                        } 
+                        else
+                        {
+                            console.log("System parameter " + param 
+                            + " initialized with empty initial value");
+                        }
+                    });
+            }
              
         });
     });

@@ -97,7 +97,17 @@ aestheticUtil.pickMostAesthetic = function(){
                             }
                             else
                             {
-                                console.log("No submissions for this selection, setting system state to OPEN.");
+                                //Reset the currently selected user ID 
+                                sysParamUtil.setParameterValue(constants.curSelUserID, "", function(err){
+                                    if(err)
+                                    {
+                                        console.log(err);
+                                    }
+                                    else
+                                    {
+                                        console.log("No submissions for this selection, setting system state to OPEN.");
+                                    }
+                                });                       
                             }
                         });
                     }
@@ -262,40 +272,67 @@ aestheticUtil.pickMostAesthetic = function(){
                                     });
                                 }
                             });
-                            
-                            //email most aesthetic artist
-                            Submission.findById(artScorePairs[0].name.slice(0,-4), function(err, submission){
+
+                            //Reset user states
+                            User.find({}, function(err, users){
                                 if(err)
                                 {
                                     console.log(err);
                                 }
                                 else
                                 {
-                                    User.findById(submission.artist.id, function(err, user){
+                                    users.forEach(function(userToReset){
+                                        userToReset.hasSubmitted = false;
+                                        userToReset.hasPayed = false;
+                                        userToReset.save();
+                                    });
+
+                                    //email most aesthetic artist
+                                    Submission.findById(artScorePairs[0].name.slice(0,-4), function(err, submission){
                                         if(err)
                                         {
                                             console.log(err);
                                         }
                                         else
                                         {
-                                            //Set the previous selection state to SELECTED
-                                            sysParamUtil.setParameterValue(constants.prevSelState, constants.prevSelState_SELECTED, function(err){
+                                            User.findById(submission.artist.id, function(err, user){
                                                 if(err)
                                                 {
                                                     console.log(err);
                                                 }
                                                 else
                                                 {
-                                                    //Set the current selection state to OPEN
-                                                    sysParamUtil.setParameterValue(constants.curSelState, constants.curSelState_OPEN, function(err){
+                                                    //Set the previous selection state to SELECTED
+                                                    sysParamUtil.setParameterValue(constants.prevSelState, constants.prevSelState_SELECTED, function(err){
                                                         if(err)
                                                         {
                                                             console.log(err);
                                                         }
                                                         else
                                                         {
-                                                            console.log("Finished selecting most aesthetic artists, setting system state to OPEN.");
-                                                            mailUtil.sendSelectionMail(user);
+                                                            //Set the current selection state to OPEN
+                                                            sysParamUtil.setParameterValue(constants.curSelState, constants.curSelState_OPEN, function(err){
+                                                                if(err)
+                                                                {
+                                                                    console.log(err);
+                                                                }
+                                                                else
+                                                                {
+                                                                    //Set the currently selected user ID to the selected user ID
+                                                                    sysParamUtil.setParameterValue(constants.curSelUserID, user._id, function(err){
+                                                                        if(err)
+                                                                        {
+                                                                            console.log(err);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            //Send mail to selected user
+                                                                            console.log("Finished selecting most aesthetic artists, setting system state to OPEN.");
+                                                                            mailUtil.sendSelectionMail(user);
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
                                                         }
                                                     });
                                                 }
