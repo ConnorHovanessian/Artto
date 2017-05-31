@@ -100,7 +100,9 @@ router.get("/home", middleware.isLoggedIn, function(req, res){
                                 //else just render the home page as usual
                                 else
                                 {
-                                    res.render("home", {curState : curState, prevState : prevState}); 
+                                    res.render("home", {
+                                                curState : constants.curSelStateToHTMLStringMap.get(curState), 
+                                                prevState : constants.prevSelStateToHTMLStringMap.get(prevState)}); 
                                 }
                             }
                             

@@ -73,11 +73,35 @@ constants.systemParameters      = [constants.curSelState, constants.prevSelState
 constants.curSelState_OPEN      = "OPEN";
 constants.curSelState_SELECTING = "SELECTING";
 
+// map for current state to HTML string
+constants.curSelStateToHTMLStringMap = new Map();
+constants.curSelStateToHTMLStringMap.set(
+    constants.curSelState_OPEN, 
+    "Artto is currently accepting submissions for the next selection!");
+constants.curSelStateToHTMLStringMap.set(
+    constants.curSelState_SELECTING, 
+    "Artto is currently selecting the most aesthetic user submissions! No new submissions are accepted at this time.");
+
 // possible states for previous selection
 constants.prevSelState_NONE     = "NONE";
 constants.prevSelState_SELECTED = "SELECTED";
 constants.prevSelState_SOLD     = "SOLD";
 constants.prevSelState_KEPT     = "KEPT";
+
+// map for previous state to HTML string
+constants.prevSelStateToHTMLStringMap = new Map();
+constants.prevSelStateToHTMLStringMap.set(
+    constants.prevSelState_NONE, 
+    "No selection state to display, be the first to have your art in the Hall of Fame!");
+constants.prevSelStateToHTMLStringMap.set(
+    constants.prevSelState_SELECTED, 
+    "The most aesthetic artists have been selected and Artto is waiting for a reply!");
+constants.prevSelStateToHTMLStringMap.set(
+    constants.prevSelState_SOLD, 
+    "One of the selected artists has sold their submission to the Artto Hall of Fame!");
+constants.prevSelStateToHTMLStringMap.set(
+    constants.prevSelState_KEPT, 
+    "All of the selected artists have chosen to keep their submissions!");
 
 
 
