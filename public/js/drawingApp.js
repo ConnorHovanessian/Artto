@@ -4,8 +4,8 @@ var lc = LC.init(
         imageURLPrefix: '/literallycanvas/img',
         imageSize: {width: 1024, height: 576},
         backgroundColor: 'white',
-        zoomMin: 1,
-        zoomMax: 1
+        zoomMin: 0.2,
+        zoomMax: 4
     }
 );
 
