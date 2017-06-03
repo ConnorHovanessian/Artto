@@ -1,6 +1,12 @@
 var constants = {};
 
 //================================================
+//Values for limiting users or emails
+//================================================
+constants.maxUsers              = 100;
+constants.maxEmail              = 2;
+
+//================================================
 //Regex Constants for Registration Validation
 //================================================
 constants.usernameRegex         = /[a-zA-Z0-9_]{4,12}/;

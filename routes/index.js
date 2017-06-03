@@ -119,7 +119,21 @@ router.get("/home", middleware.isLoggedIn, function(req, res){
 
 //show register form
 router.get("/register", function(req, res){
-    res.render("register");
+    
+    User.find({}, function(err, users){
+    	if(err)
+		{
+			console.log(err);
+		}
+		
+        if (users.length < constants.maxUsers){
+            res.render("register");
+        }
+        else{
+            res.render("maxUsers");
+        }
+    });
+
 });
 
 //handle register logic
@@ -131,6 +145,21 @@ router.post("/register", function(req, res){
         console.log("Honey Detected");
         return res.redirect("/");
     }
+    
+    User.find({}, function(err, users){
+    if(err)
+		{
+			console.log(err);
+		}
+		
+        if (users.length >= constants.maxUsers){
+            req.flash("error", "Sorry! The maximum number of users has been reached, Please check back to see if there's space available next week!");
+            res.redirect("/landing");
+        }
+        else{
+            
+        }
+    });
     
     //Check to make sure user data is valid
     if(!constants.usernameRegex.test(req.body.username) 
