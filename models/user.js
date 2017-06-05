@@ -16,6 +16,7 @@ var UserSchema = new mongoose.Schema({
     connectedToStripe: Boolean,
     dateCreated: Date,
     timeStarted: Date,
+    sessionEmails: Number,
     submissions: [
         {
             type: mongoose.Schema.Types.ObjectId,

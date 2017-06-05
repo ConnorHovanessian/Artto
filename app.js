@@ -8,10 +8,12 @@ var express = require("express"),
     User = require("./models/user"),
     methodOverride = require("method-override"),
     aestheticUtil = require("./util/aestheticUtil"),
+    mailUtil = require("./util/mailUtil"),
     seedUtil = require("./util/seeds"),
     constants = require("./util/constants"),
     fs = require('fs'),
     cron = require('node-cron');
+    
 
 //requiring routes
 var indexRoutes = require("./routes/index");
@@ -96,6 +98,7 @@ app.listen(process.env.PORT, process.env.IP, function(req){
     // submissions (now every 5 mins).
     cron.schedule('*/5 * * * *', function(){
         aestheticUtil.pickMostAesthetic();
+        mailUtil.resetSessionEmails();
     });
     
 });

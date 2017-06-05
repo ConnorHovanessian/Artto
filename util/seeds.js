@@ -37,7 +37,8 @@ seeds.initDebugEnv = function(callback){
                             var newUser = new User({
                                 username: "admin",
                                 email: "dima.goncharov@hotmail.com",
-                                verified: true
+                                verified: true,
+                                sessionEmails: 0
                             });
                             
                             User.register(newUser, "admin", function(err, user){
@@ -52,7 +53,8 @@ seeds.initDebugEnv = function(callback){
                                     var newUser2 = new User({
                                         username: "admin2",
                                         email: "dima.goncharov@hotmail.com",
-                                        verified: true
+                                        verified: true,
+                                        sessionEmails: 0
                                     });
                                     
                                     User.register(newUser2, "admin", function(err, user){
@@ -68,7 +70,8 @@ seeds.initDebugEnv = function(callback){
                                             var newUser3 = new User({
                                                 username: "admin3",
                                                 email: "chovanes@sfu.ca",
-                                                verified: true
+                                                verified: true,
+                                                sessionEmails: 0
                                             });
                                             
                                             User.register(newUser3, "admin", function(err, user){
@@ -84,7 +87,8 @@ seeds.initDebugEnv = function(callback){
                                                     var newUser4 = new User({
                                                         username: "admin4",
                                                         email: "chovanes@sfu.ca",
-                                                        verified: true
+                                                        verified: true,
+                                                        sessionEmails: 0
                                                     });
                                                     
                                                     User.register(newUser4, "admin", function(err, user){

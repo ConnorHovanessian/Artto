@@ -156,9 +156,6 @@ router.post("/register", function(req, res){
             req.flash("error", "Sorry! The maximum number of users has been reached, Please check back to see if there's space available next week!");
             res.redirect("/landing");
         }
-        else{
-            
-        }
     });
     
     //Check to make sure user data is valid
@@ -209,7 +206,8 @@ router.post("/register", function(req, res){
                         email: req.body.email,
                         verifyToken: verifyToken,
                         verified: false,
-                        connectedToStripe: false
+                        connectedToStripe: false,
+                        sessionEmails: 0
                     });
                     
                     User.register(newUser, req.body.password, function(err, user){
@@ -340,27 +338,38 @@ router.post("/forgotPassword", function(req, res){
             //if we found a user
             if(user._id)
             {
-                //generate password reset verification token
-                var resetToken = crypto.randomBytes(32).toString('hex');
-                user.passwordResetToken = resetToken;
-                user.save();
-                
-                var subject = "Reset your Artto password.";
-                var url = req.originalUrl.split("/")[0];
-                var fullUrl = req.protocol + '://' + req.get('host') + url + "/resetPassword/" + user._id + "/" + resetToken;
-                
-                var body = '<p>Hi ' + user.username + ',</p>';
-                body += '<p>Please click the link below to reset your Artto password:</p> ';
-                body += ' <p><a href="' + fullUrl + '">Reset Password</a></p>';
-                body += '<p>Cheers,</p>';
-                body += '<p>Artto Team</p>';
-                
-                var error;
-                mailUtil.sendMail(user.email, subject, body, error);
-                if(error)
+                if(user.sessionEmails<constants.maxEmails)
                 {
-                    console.log(error);
+                    user.sessionEmails++;
+                    user.save();
+                    //generate password reset verification token
+                    var resetToken = crypto.randomBytes(32).toString('hex');
+                    user.passwordResetToken = resetToken;
+                    user.save();
+                    
+                    var subject = "Reset your Artto password.";
+                    var url = req.originalUrl.split("/")[0];
+                    var fullUrl = req.protocol + '://' + req.get('host') + url + "/resetPassword/" + user._id + "/" + resetToken;
+                    
+                    var body = '<p>Hi ' + user.username + ',</p>';
+                    body += '<p>Please click the link below to reset your Artto password:</p> ';
+                    body += ' <p><a href="' + fullUrl + '">Reset Password</a></p>';
+                    body += '<p>Cheers,</p>';
+                    body += '<p>Artto Team</p>';
+                    
+                    var error;
+                    mailUtil.sendMail(user.email, subject, body, error);
+                    if(error)
+                    {
+                        console.log(error);
+                    }
                 }
+                
+                else{
+                    req.flash("error", "This account has send and recieved over " + constants.maxEmails + " emails this session! Emails are temporarily disabled for the remainder of the week.");
+                    return res.redirect("/");
+                }
+                
             }
             
             req.flash("success", "If the specified email (" + req.body.email + ") belongs to an Artto account," +
@@ -428,33 +437,43 @@ router.get("/contact", middleware.isLoggedIn, function(req, res){
 
 //handle contact logic
 router.post("/contact", middleware.isLoggedIn, function(req, res){
-    
-    //Check to make sure subject and message are filled out
-    if(req.body.subject=="" || req.body.message=="")
+    if(req.user.sessionEmails < constants.maxEmails)
     {
-        req.flash("error", "Subject and Body must be filled out!");
-        return res.redirect("/contact");
+        req.user.sessionEmails++;
+        req.user.save();
+        
+        //Check to make sure subject and message are filled out
+        if(req.body.subject=="" || req.body.message=="")
+        {
+            req.flash("error", "Subject and Body must be filled out!");
+            return res.redirect("/contact");
+        }
+        
+        var to_whom = "arttoteam@gmail.com"
+        var subject = req.body.subject;
+        var body = "<p>" + req.body.message + "</p>";
+        body += "<p>From your friend, " + req.user.username + "</p>";
+        body += "<p>Contact at " + req.user.email + "</p>";
+        
+        var error;
+        
+        mailUtil.sendMail(to_whom, subject, body, error);
+        
+        if(error)
+        {
+            console.log(error);
+            req.flash("error", error);
+            res.redirect("/contact");
+        }
+        
+        req.flash("success", "Your message was sent! Thanks for contacting us!");
+        return res.redirect("/");
     }
-    
-    var to_whom = "arttoteam@gmail.com"
-    var subject = req.body.subject;
-    var body = "<p>" + req.body.message + "</p>";
-    body += "<p>From your friend, " + req.user.username + "</p>";
-    body += "<p>Contact at " + req.user.email + "</p>";
-    
-    var error;
-    
-    mailUtil.sendMail(to_whom, subject, body, error);
-    
-    if(error)
+    else
     {
-        console.log(error);
-        req.flash("error", error);
-        res.redirect("/contact");
+        req.flash("error", "This account has sent and recieved over " + constants.maxEmails + " emails this session! Emails are temporarily disabled for the remainder of the week.");
+        return res.redirect("/");
     }
-    
-    req.flash("success", "Your message was sent! Thanks for contacting us!");
-    return res.redirect("/");
 });
 
 

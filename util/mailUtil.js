@@ -4,6 +4,7 @@ var Mailgun = require('mailgun-js');
 var crypto = require("crypto");
 var constants = require("./constants");
 var Submission = require("../models/submission");
+var User = require("../models/user");
 
 mailUtil.sendMail = function(to, subject, body, error, attachment)
 {
@@ -80,5 +81,23 @@ mailUtil.sendSelectionMail = function(user)
     });
 };
 
+mailUtil.resetSessionEmails = function()
+{
+  User.find({}, function(err, users){
+    
+    if(err)
+    {
+      console.log(err);
+    }
+    else
+    {
+      users.forEach(user => {
+        user.sessionEmails = 0;
+        user.save();
+      });
+    }
+    
+  });
+};
 
 module.exports = mailUtil

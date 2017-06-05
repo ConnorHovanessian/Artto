@@ -4,7 +4,7 @@ var constants = {};
 //Values for limiting users or emails
 //================================================
 constants.maxUsers              = 100;
-constants.maxEmail              = 2;
+constants.maxEmails             = 1;
 
 //================================================
 //Regex Constants for Registration Validation
