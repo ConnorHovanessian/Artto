@@ -329,9 +329,10 @@ router.post("/forgotPassword", function(req, res){
     
     User.findOne({email:req.body.email}, function(err, user){
 
-        if(err)
+        if(err||!user)
         {
-            return res.redirect("/");
+            req.flash("error", "Sorry, we couldn't find a user with that email address!");
+            return res.redirect("/forgotPassword");
         }
         else
         {
