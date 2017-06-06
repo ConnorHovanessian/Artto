@@ -1,6 +1,6 @@
 # ARTTO #
 
-### Account Info ###
+### Production Account Info ###
 
 * Gmail (Username: arttoteam Password: ComputerAesthetics888)
 * mLab (Username: artto Password: ComputerAesthetics888)
