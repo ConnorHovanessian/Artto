@@ -8,3 +8,5 @@
     * admin DB account (Username: arttoadmin Password: ComputerAesthetics666)
 * Heroku (Email: arttoteam@gmail.com Password: ComputerAesthetics888)
 * Stripe (Email: arttoteam@gmail.com Password: ComputerAesthetics888)
+* Mailgun (Email: arttoteam@gmail.com Password: ComputerAesthetics888)
+    * Note: I already added my credit card for mailgun, so we should get 10,000 free emails a month
