@@ -6,4 +6,4 @@
 * mLab (Username: artto Password: ComputerAesthetics888)
     * connection URI (mongodb://<dbuser>:<dbpassword>@ds151059.mlab.com:51059/arttodb)
     * admin DB account (Username: arttoadmin Password: ComputerAesthetics666)
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* Heroku (Email: arttoteam@gmail.com Password: ComputerAesthetics888)
