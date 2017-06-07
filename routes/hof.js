@@ -5,7 +5,7 @@ var Submission = require("../models/submission");
 
 
 //Route to render the hall of fame
-router.get("/hof", middleware.isLoggedIn, function(req, res){
+router.get("/hof", function(req, res){
 
     Submission.paginate({chosenForHOF : true}, { page:1, limit: 4 }, 
     function(err, result){
@@ -23,7 +23,7 @@ router.get("/hof", middleware.isLoggedIn, function(req, res){
 });
 
 //Route for HOF pagination
-router.get("/hofPage", middleware.isLoggedIn, function(req, res){
+router.get("/hofPage", function(req, res){
     
     var retObj = {};
 
