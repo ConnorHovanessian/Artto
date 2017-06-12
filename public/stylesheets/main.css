@@ -18,3 +18,13 @@ navbar .navbar-nav {
 .navbar-brand {
   font-size: 24px;
 }
+
+.navbar-default {
+  background-color: #AFE8DD;
+
+}
+
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+  background-color: #AFE8DD;
+
+}
