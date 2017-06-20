@@ -2,29 +2,26 @@ navbar .navbar-nav {
   display: inline-block;
   float: none;
   vertical-align: top;
-  background-color: #AFE8DD;
   margin: 0;
 }
 
 .navbar .navbar-collapse {
   text-align: center;
-  background-color: #AFE8DD;
 }
 
 .container-fluid {
   padding: 0;
 }
 
-.navbar-brand {
+.navbar-inverse .navbar-brand {
   font-size: 24px;
+  color: #95D4A3;
 }
 
-.navbar-default {
-  background-color: #AFE8DD;
-
+.navbar {
+  margin-bottom: 0
 }
-
-.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
-  background-color: #AFE8DD;
-
+.jumbotron {
+  margin-bottom: 0;
+  background-color: #95D4A3;
 }

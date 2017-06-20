@@ -29,6 +29,7 @@ mongoose.connect(dbURL);
 app.use(bodyParser.urlencoded({extended : true, limit : '5mb'}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+app.use('/fontawesome', express.static(__dirname + "/node_modules/font-awesome"));
 app.use(methodOverride("_method"));
 app.use(flash());
 

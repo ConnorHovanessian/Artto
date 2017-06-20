@@ -1,22 +1,51 @@
 <% include partials/header %>
 
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-3 text-center">Welcome to Artto!</h1>
+        <p class="lead text-center">Submissions this round: <span id="subs"></span></p>
+        <p class="text-center">Time left until next round: <span id="time"></span></p>
+    </div>
+</div>
+
 <div class="container">
-    <h1>Welcome to Artto!</h1>
+
+    <h1 class="text-center"><i class="fa fa-question-circle fa-2x" aria-hidden="true"></i></h1>
+    <h1 class="text-center">What is Artto?</h1>
+    <p class="text-center">Artto is a fun way to participate in an experiment about computer defined beauty.</p>
+    <hr>
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="text-center"><i class="fa fa-money fa-5x" aria-hidden="true"></i></div>
+            <div class="caption">
+                <h3 class="text-center">1. Pay the submission fee</h3>
+                <p class="text-center">Quinoa fashion axe plaid copper mug kale chips kickstarter marfa meditation cardigan chartreuse bushwick man bun church-key. Flexitarian polaroid vexillologist roof party everyday carry affogato asymmetrical trust fund sriracha tattooed godard stumptown mustache.</p>         
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="text-center"><i class="fa fa-paint-brush fa-5x" aria-hidden="true"></i></div>
+            <div class="caption">
+                <h3 class="text-center">2. Create your art!</h3>
+                <p class="text-center">Ennui migas chicharrones la croix, shoreditch helvetica bushwick chillwave activated charcoal brunch typewriter craft beer. Ugh occupy pork belly, letterpress food truck knausgaard schlitz deep v art party literally tote bag lo-fi fixie disrupt.</p>         
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="text-center"><i class="fa fa-trophy fa-5x" aria-hidden="true"></i></div>
+            <div class="caption">
+                <h3 class="text-center">3. Hall of Fame?</h3>
+                <p class="text-center">Food truck quinoa tofu yuccie YOLO prism vegan street art master cleanse DIY snackwave vinyl. Pour-over taxidermy health goth kickstarter YOLO wolf freegan af lo-fi schlitz selfies raw denim. Flannel lomo kale chips VHS shoreditch copper mug, celiac vice lyft.</p>         
+            </div>
+        </div>
+    </div>
+    <hr>
     
-    <h3>What is Artto?</h3>
     <p>Artto is a fun way to participate in an experiment about computer defined beauty.<br>
     By paying $1, you are given 60 seconds to create and title a painting for our specialized computer, Arthur, to view. <br>
     Every Sunday, Arthur uses the submission fees to make a bid on his favourite artwork of the last week.<br>
     If the creator of the piece decides to sell it to Arthur, the painting is entered in the Hall of Fame, where all of Arthur's favourites are on display!<br>
     </p>
-    
-    <h3>Submissions This Session</h3>
-    <p id="subs">subcount</p>
-    
-    <hr>
-    
-    <h3>Time Left</h3>
-    <p id="time">timeleft</p>
+
     <script src="js/updateSystemStateLanding.js">
     </script>
 

@@ -13,6 +13,9 @@
     
         <!-- Literally Canvas -->
         <script src="/literallycanvas/js/literallycanvas.js"></script>
+
+        <!-- Font Awesome -->
+        <link href="/fontawesome/css/font-awesome.min.css" rel="stylesheet">
         
         <!-- Recaptcha -->
         <script src="https://www.google.com/recaptcha/api.js"></script>
@@ -29,7 +32,7 @@
     </head>
     <body>
         
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-inverse">
         <div class="container-fluid" style="padding:0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -39,9 +42,9 @@
                     <span class="icon-bar"></span>
                 </button>
                 <% if(!currentUser){ %>
-                <a class="navbar-brand" href="/">&#160; Artto</a>
+                <a class="navbar-brand" href="/">&#160;  <i class="fa fa-paint-brush" aria-hidden="true"></i> Artto </a>
                 <% } else{ %>
-                <a class="navbar-brand" href="/home">&#160; Artto</a>
+                <a class="navbar-brand" href="/home">&#160;  <i class="fa fa-paint-brush" aria-hidden="true"></i> Artto</a>
                 <% } %>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -50,8 +53,8 @@
                     
                         <li><a href="/hof">Hall of Fame</a></li>
                         <li><a href="/faq">FAQ</a></li>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/register">Sign Up</a></li>
+                        <li><a href="/login">Login  <i class="fa fa-sign-in" aria-hidden="true"></i></a></li>
+                        <li><a href="/register">Sign Up  <i class="fa fa-user-plus" aria-hidden="true"></i></a></li>
 
                         
                     <% } else{ %>
@@ -62,7 +65,7 @@
                         <li><a href="/hof">Hall of Fame</a></li>
                         <li><a href="/faq">FAQ</a></li>
                         <li><a href="/contact">Contact Us</a></li>
-                        <li><a href="/logout">Logout</a></li>
+                        <li><a href="/logout">Logout <i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
                        
                         
                         
