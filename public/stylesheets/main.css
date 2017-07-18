@@ -1,5 +1,7 @@
 html, body {
-  height: 100%
+   min-height: 400px;
+   margin-bottom: 50px;
+   clear: both;
 }
 
 navbar .navbar-nav {
